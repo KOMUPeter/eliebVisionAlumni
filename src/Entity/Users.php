@@ -41,7 +41,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column]
-    private ?int $phoneNumber = null;
+    private ?string $phoneNumber = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $registrationDate = null;
@@ -134,13 +134,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-        // Add additional roles
-        $roles[] = 'ROLE_ADMIN';
-        $roles[] = 'ROLE_ADMIN2';
-        $roles[] = 'ROLE_TREASURER';
-        $roles[] = 'ROLE_SECRETARY';
-        $roles[] = 'ROLE_MEMBERREP';
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
 
         return array_unique($roles);
         
@@ -204,12 +200,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhoneNumber(): ?int
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(int $phoneNumber): static
+    public function setPhoneNumber(string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
 
@@ -233,7 +229,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->isSubscribed;
     }
 
-    public function setSubscribed(bool $isSubscribed): static
+    public function setIsSubscribed(bool $isSubscribed): static
     {
         $this->isSubscribed = $isSubscribed;
 

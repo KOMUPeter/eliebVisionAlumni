@@ -11,6 +11,11 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<Users>
+ * 
+ * @method Adresse|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Adresse|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Adresse[]    findAll()
+ * @method Adresse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UsersRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
@@ -31,6 +36,16 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function findUserByEmailOrUsername(string $useremail) : ?Users
+    {
+        return $this->createQueryBuilder('U')
+            ->where('U.email = :indentifier')
+            ->setParameter('indentifier', $useremail )
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
     }
 
     //    /**

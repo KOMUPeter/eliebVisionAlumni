@@ -182,4 +182,15 @@ class Images
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            'Image #%d: %s at %s (%d bytes)',
+            $this->id,
+            $this->fileName,
+            $this->path,
+            $this->size
+        );
+    }
 }

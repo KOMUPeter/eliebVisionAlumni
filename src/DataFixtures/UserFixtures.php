@@ -27,19 +27,13 @@ class UserFixtures extends Fixture
         $users = [
             [
                 'email' => 'user@example.com',
-                'password' => 'password123',
+                'password' => 'user@example.com',
                 'firstName' => 'John',
                 'lastName' => 'Doe',
                 'phoneNumber' => '1234567890',
                 'registrationDate' => new \DateTime(),
                 'isSubscribed' => true,
                 'roles' => ['ROLE_USER', 'ROLE_MEMBER'],
-                'nextOfKin' => [
-                    'nextOfKinFirstName' => 'Jane',
-                    'nextOfKinLastName' => 'Doe',
-                    'nextOfKinEmail' => 'jane.doe@example.com',
-                    'nextOfKinPhone' => '987654321',
-                ],
                 'profileImage' => [
                     'fileName' => 'profile_image1.jpg',
                     'path' => 'path/to/profile/image1.jpg',
@@ -63,12 +57,6 @@ class UserFixtures extends Fixture
                 'registrationDate' => new \DateTime(),
                 'isSubscribed' => false,
                 'roles' => ['ROLE_ADMIN', 'ROLE_SECRETARY'],
-                'nextOfKin' => [
-                    'nextOfKinFirstName' => 'John',
-                    'nextOfKinLastName' => 'Smith',
-                    'nextOfKinEmail' => 'john.smith@example.com',
-                    'nextOfKinPhone' => '123456789',
-                ],
                 'profileImage' => [
                     'fileName' => 'profile_image2.jpg',
                     'path' => 'path/to/profile/image2.jpg',
@@ -95,16 +83,6 @@ class UserFixtures extends Fixture
             $user->setRegistrationDate($userData['registrationDate']);
             $user->setIsSubscribed($userData['isSubscribed']);
             $user->setRoles($userData['roles']);
-
-            // Set next of kin
-            $nextOfKinData = $userData['nextOfKin'];
-            $nextOfKin = new NextOfKin();
-            $nextOfKin->setNextOfKinFirstName($nextOfKinData['nextOfKinFirstName']);
-            $nextOfKin->setNextOfKinLastName($nextOfKinData['nextOfKinLastName']);
-            $nextOfKin->setNextOfKinEmail($nextOfKinData['nextOfKinEmail']);
-            $nextOfKin->setNextOfKinPhone($nextOfKinData['nextOfKinPhone']);
-            $user->addNextOfKin($nextOfKin);
-            $manager->persist($nextOfKin);
 
             // Set profile image
             $profileImageData = $userData['profileImage'];

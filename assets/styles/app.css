@@ -1,3 +1,79 @@
 body {
-    background-color: skyblue;
+    background: linear-gradient(to left, rgb(248, 249, 250), rgb(233, 236, 239), rgb(248, 249, 250));
+}
+/* *************** base html page ***************** */
+
+/* *************** login page ***************** */
+.login-wrapper {
+    height: 85vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa; 
+}
+.login-box {
+    max-width: 400px; 
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ced4da; 
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff; 
+}
+/* *************** home page ***************** */
+.homeWrapper {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.homeWrapper h1 {
+    text-align: center;
+    padding: 30px;
+}
+
+.homeWrapper p {
+    text-align: justify;
+}
+
+.homeWrapper article {
+    display: flex;
+    gap: 20px;
+    justify-content: center; /* Center the articles horizontally */
+}
+
+.homeWrapper article div {
+    width: 45%; /* Adjust width as needed */
+    border: 1px solid black;
+    border-radius: 20px;
+    text-align: center;
+    height: 20vh;
+    display: flex; /* Use flexbox for centering content */
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    margin-top: 20px;
+    margin: 50px;
+}
+
+.homeWrapper article div:hover {
+    background-color: rgb(206, 213, 219);
+}
+
+.homeWrapper article div a {
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Media Query for Phones */
+@media (max-width: 768px) {
+    .homeWrapper article {
+        display: block;
+    }
+
+    .homeWrapper article div {
+        width: 100%; /* Full width on small screens */
+        margin: 40px 0; /* Adjust margin for spacing */
+    }
 }

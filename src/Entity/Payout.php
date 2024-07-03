@@ -64,4 +64,10 @@ class Payout
 
         return $this;
     }
+    public function __toString(): string
+    {
+        return sprintf('Payout #%d: %d on %s', $this->id, 
+        $this->amount, 
+        $this->paydate->format('Y-m-d'));
+    }
 }

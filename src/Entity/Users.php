@@ -34,6 +34,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    private ?string $plainPassword = null;
+
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
@@ -43,23 +45,21 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $registrationDate = null;
-
     #[ORM\Column]
     private ?bool $isSubscribed = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nextOfKins = null;
+
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nextOfKinTel = null;
+    
     /**
      * @var Collection<int, Payout>
      */
     #[ORM\OneToMany(targetEntity: Payout::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $payouts;
-
-    /**
-     * @var Collection<int, NextOfKin>
-     */
-    #[ORM\OneToMany(targetEntity: NextOfKin::class, mappedBy: 'user')]
-    private Collection $nextOfKin;
 
     /**
      * @var Collection<int, PrivateMessage>
@@ -88,10 +88,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'userProfileImage')]
     private ?Images $profileImage = null;
 
+    #[ORM\Column]
+    private ?int $registrationAmount = null;
+
     public function __construct()
     {
         $this->payouts = new ArrayCollection();
-        $this->nextOfKin = new ArrayCollection();
         $this->privateMessages = new ArrayCollection();
         $this->recipientPrivateMessage = new ArrayCollection();
         $this->groupMessages = new ArrayCollection();
@@ -160,20 +162,31 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
 
         return $this;
     }
-
+    
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+    
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+    
+        return $this;
+    }
     /**
      * @see UserInterface
      */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getFirstName(): ?string
@@ -208,18 +221,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhoneNumber(string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    public function getRegistrationDate(): ?\DateTimeInterface
-    {
-        return $this->registrationDate;
-    }
-
-    public function setRegistrationDate(\DateTimeInterface $registrationDate): static
-    {
-        $this->registrationDate = $registrationDate;
 
         return $this;
     }
@@ -260,36 +261,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($payout->getUser() === $this) {
                 $payout->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, NextOfKin>
-     */
-    public function getNextOfKin(): Collection
-    {
-        return $this->nextOfKin;
-    }
-
-    public function addNextOfKin(NextOfKin $nextOfKin): static
-    {
-        if (!$this->nextOfKin->contains($nextOfKin)) {
-            $this->nextOfKin->add($nextOfKin);
-            $nextOfKin->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeNextOfKin(NextOfKin $nextOfKin): static
-    {
-        if ($this->nextOfKin->removeElement($nextOfKin)) {
-            // set the owning side to null (unless already changed)
-            if ($nextOfKin->getUser() === $this) {
-                $nextOfKin->setUser(null);
             }
         }
 
@@ -424,4 +395,48 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getRegistrationAmount(): ?int
+    {
+        return $this->registrationAmount;
+    }
+
+    public function setRegistrationAmount(int $registrationAmount): static
+    {
+        $this->registrationAmount = $registrationAmount;
+
+        return $this;
+    }
+
+    public function getNextOfKinTel(): ?string
+    {
+        return $this->nextOfKinTel;
+    }
+
+    public function setNextOfKinTel(?string $nextOfKinTel): static
+    {
+        $this->nextOfKinTel = $nextOfKinTel;
+
+        return $this;
+    }
+    /**
+     * Get the value of nextOfKins
+     */
+    public function getNextOfKins(): ?string
+    {
+        return $this->nextOfKins;
+    }
+
+    /**
+     * Set the value of nextOfKins
+     *
+     * @return self
+     */
+    public function setNextOfKins(?string $nextOfKins): self
+    {
+        $this->nextOfKins = $nextOfKins;
+
+        return $this;
+    }
+
 }

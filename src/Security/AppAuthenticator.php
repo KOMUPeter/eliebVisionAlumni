@@ -21,7 +21,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'app_login';
+    public const LOGIN_ROUTE = 'app_login';  
 
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
@@ -35,6 +35,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         $email = $request->getPayload()->getString('email');
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
+        // $request->getSession()->set(Security::LAST_USERNAME, $email);
 
         return new Passport(
             new UserBadge($email, fn (string $indentifier) => $this->usersRepository->findUserByEmailOrUsername($indentifier) ),

@@ -16,28 +16,19 @@ class EventsRepository extends ServiceEntityRepository
         parent::__construct($registry, Events::class);
     }
 
-    //    /**
-    //     * @return Events[] Returns an array of Events objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getTotalEventCost(): int
+    {
+        return $this->createQueryBuilder('e')
+            ->select('SUM(e.cost)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Events
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getAllEvents(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->orderBy('e.eventDate', 'DESC') // Order by eventDate in descending order
+            ->getQuery()
+            ->getResult();
+    }
 }

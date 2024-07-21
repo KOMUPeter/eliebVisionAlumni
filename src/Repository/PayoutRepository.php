@@ -16,20 +16,13 @@ class PayoutRepository extends ServiceEntityRepository
         parent::__construct($registry, Payout::class);
     }
 
-    //    /**
-    //     * @return Payout[] Returns an array of Payout objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getTotalPayoutAmount(): float
+    {
+        return $this->createQueryBuilder('p')
+            ->select('SUM(p.amount)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
     //    public function findOneBySomeField($value): ?Payout
     //    {

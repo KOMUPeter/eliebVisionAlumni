@@ -48,6 +48,15 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
             ->getSingleResult();
     }
 
+    //calculate the total registration
+    public function getTotalRegistrationAmount(): float
+    {
+        return $this->createQueryBuilder('u')
+            ->select('SUM(u.registrationAmount)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Users[] Returns an array of Users objects
     //     */

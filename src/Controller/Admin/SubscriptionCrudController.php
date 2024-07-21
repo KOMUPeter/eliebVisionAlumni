@@ -2,30 +2,29 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Payout;
+use App\Entity\Subscription;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
-class PayoutCrudController extends AbstractCrudController
+class SubscriptionCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Payout::class;
+        return Subscription::class;
     }
 
     public function configureFields(string $pageName): iterable
     {
         return [
             IdField::new('id')->hideOnForm(),
-            NumberField::new('amount'),
-            DateTimeField::new('paydate')->setFormat('yyyy-MM-dd HH:mm:ss'),
-            AssociationField::new('user'),
-            DateField::new('month')->setFormat('yyyy-MM-dd'),
+            NumberField::new('SubscriptionAmount'),
+            DateField::new('DateOFsubscription')->setFormat('yyyy-MM-dd'),
+            AssociationField::new('UserInscription'),
         ];
     }
 }
-

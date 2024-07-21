@@ -24,6 +24,9 @@ class Payout
     #[ORM\JoinColumn(nullable: false)]
     private ?Users $user = null;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $month = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,4 +73,17 @@ class Payout
         $this->amount, 
         $this->paydate->format('Y-m-d'));
     }
+
+    public function getMonth(): ?\DateTimeInterface
+    {
+        return $this->month;
+    }
+
+    public function setMonth(?\DateTimeInterface $month): static
+    {
+        $this->month = $month;
+
+        return $this;
+    }
+
 }

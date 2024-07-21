@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Account{% endblock %}
+
+{% block body %}
+<div class="container myaccountContainer mt-5 d-flex flex-column align-items-center">
+    <h1 class="text-center">My Account</h1>
+    <p><a class="nav-link" href="{{ path('app_home_page') }}">Return to home</a></p>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title text-center">My Account Details</h5>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>First Name:</strong> {{ user.firstName }}</p>
+            <p><strong>Last Name:</strong> {{ user.lastName }}</p>
+            <p><strong>Phone Number:</strong> {{ user.phoneNumber }}</p>
+            <p>
+                <strong>Member:</strong> 
+                <span style="color: {{ user.isSubscribed ? 'green' : 'red' }}">
+                    {{ user.isSubscribed ? 'Yes' : 'No' }}
+                </span>
+            </p>
+            <p><strong>Next of Kins:</strong> {{ user.nextOfKins }}</p>
+            <p><strong>Next of Kin Tel:</strong> {{ user.nextOfKinTel }}</p>
+            <br>
+            
+            <!-- Placeholder for heading -->
+            <h4 id="passwordHeading">
+                <a href="#" id="changePasswordLink" onclick="togglePasswordForm(event)">Click to Change Password ?</a>
+            </h4>
+            
+            <!-- Password change form initially hidden -->
+            <div id="passwordForm">
+                {{ form_start(form) }}
+                    <div class="form-group position-relative">
+                        {{ form_label(form.currentPassword) }}
+                        {{ form_widget(form.currentPassword, {
+                            'attr': {
+                                'class': 'form-control',
+                                'id': 'currentPassword',
+                                'placeholder': 'Current Password'
+                            }
+                        }) }}
+                        <span class="position-absolute" style="right: 10px; top: 38px; cursor: pointer;" onclick="togglePasswordVisibility('currentPassword', 'toggleCurrentPasswordIcon')">
+                            <i id="toggleCurrentPasswordIcon" class="fa fa-eye"></i>
+                        </span>
+                        {{ form_errors(form.currentPassword) }}
+                    </div>      
+                    <div class="form-group position-relative">
+                        {{ form_label(form.newPassword) }}
+                        {{ form_widget(form.newPassword, {
+                            'attr': {
+                                'class': 'form-control',
+                                'id': 'newPassword',
+                                'placeholder': 'New Password'
+                            }
+                        }) }}
+                        <span class="position-absolute" style="right: 10px; top: 38px; cursor: pointer;" onclick="togglePasswordVisibility('newPassword', 'toggleNewPasswordIcon')">
+                            <i id="toggleNewPasswordIcon" class="fa fa-eye"></i>
+                        </span>
+                        {{ form_errors(form.newPassword) }}
+                    </div>      
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                {{ form_end(form) }}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -3,11 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Users;
+use App\Field\VichImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\{Action, Actions, Crud, KeyValueStore};
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\{IdField, EmailField, TextField};
+use EasyCorp\Bundle\EasyAdminBundle\Field\{IdField, EmailField, TextField, ImageField};
 use Symfony\Component\Form\Extension\Core\Type\{PasswordType, RepeatedType};
 use Symfony\Component\Form\{FormBuilderInterface, FormEvent, FormEvents};
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -15,6 +16,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class UsersCrudController extends AbstractCrudController
 {
@@ -30,9 +35,10 @@ class UsersCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::DETAIL)
+            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_RETURN)
+            ->remove(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN)
             ;
     }
 
@@ -59,16 +65,19 @@ class UsersCrudController extends AbstractCrudController
             TextField::new('phoneNumber'),
             TextField::new('nextOfKins'),
             TextField::new('nextOfKinTel'),
-            // DateTimeField::new('dateOfRegistration')
-            //     ->setFormat('dd/MM/yyyy') // Set the format to display date only
-            //     ->setFormTypeOptions([
-            //         'html5' => true, // Ensure HTML5 date input type is used
-            //     ]),
             BooleanField::new('isSubscribed'),
             NumberField::new('registrationAmount'),
-            // Add association fields for the relations
-            // AssociationField::new('payouts')->setFormTypeOptions(['by_reference' => false]),
-            AssociationField::new('profileImage'),
+            DateTimeField::new('updatedAt')->setFormat('yyyy-MM-dd HH:mm:ss'),
+            // ImageField::new('profileImage')
+            //     ->setBasePath('/images')
+            //     ->setUploadDir('public/images')
+            //     ->setFormType(VichImageType::class)
+            //     ->setFormTypeOptions([
+            //         'allow_delete' => true,
+            //         'download_uri' => true,
+            //         'image_uri' => true,
+            //     ]),
+
         ];
 
         $password = TextField::new('password')

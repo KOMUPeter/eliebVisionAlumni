@@ -1,7 +1,21 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
 body {
     background: linear-gradient(to left, rgb(248, 249, 250), rgb(233, 236, 239), rgb(248, 249, 250));
 }
+.content {
+    flex: 1;
+}
 /* *************** base html page ***************** */
+.logof {
+    width: 80px;
+    height: 80px;
+}
 
 /* *************** login page ***************** */
 .login-wrapper {
@@ -17,9 +31,32 @@ body {
     padding: 20px;
     border: 1px solid #ced4da; 
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 0 15px rgba(79, 187, 75, 0.1); 
     background-color: #ffffff; 
 }
+/* *************** myaccount ***************** */
+/* Ensure container is centered */
+.myaccountContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically if there's extra space */
+    padding-bottom: 50px;
+}
+
+/* Adjust card styles if needed */
+.card {
+    max-width: 600px; /* Set a max-width for the card */
+    width: 100%; /* Ensure it takes full width within its container */
+    /* text-align: center; */
+}
+
+/* Center form elements */
+.form-group {
+    width: 100%; /* Ensure the form groups take full width */
+    max-width: 500px; /* Set a max-width for the form groups */
+}
+
 /* *************** home page ***************** */
 .homeWrapper {
     width: 80%;
@@ -44,7 +81,7 @@ body {
 
 .homeWrapper article div {
     width: 45%; /* Adjust width as needed */
-    border: 1px solid black;
+    border: 1px solid rgb(32, 134, 6);
     border-radius: 20px;
     text-align: center;
     height: 20vh;
@@ -53,6 +90,11 @@ body {
     justify-content: center; /* Horizontally center */
     margin-top: 20px;
     margin: 50px;
+}
+
+.homeWrapper article div {
+    background-color: white;
+    transition: background-color 0.5s;
 }
 
 .homeWrapper article div:hover {
@@ -64,7 +106,31 @@ body {
     color: black;
     font-size: 18px;
     font-weight: bold;
+    transition: color 0.5s, font-size 0.5s; /* Added transition for color and font-size */
 }
+
+.homeWrapper article div:hover a {
+    color: rgb(78, 197, 62); /* Color change on hover */
+    font-size: 40px; /* Font size change on hover */
+}
+
+/* ******************** footer ******************** */
+footer {
+    display: flex;
+    background-color: #040f1b;
+    padding: 1rem 0;
+}
+footer nav, footer nav ul {
+    align-items: center;
+}
+footer nav ul {
+    display: flex;
+    justify-content: space-between;
+}
+footer nav ul a {
+    color: rgba(245, 245, 245, 0.76);
+}
+
 
 /* Media Query for Phones */
 @media (max-width: 768px) {

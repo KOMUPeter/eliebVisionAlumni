@@ -7,14 +7,20 @@
     <section class="homeWrapper">
     <div>
         <h1> Welcome, Eliebs Alumni</h1>
-        <p>The group was founded with the dual purpose of fostering mutual support among its members and nurturing lasting relationships. We envisioned a community where former members could lean on each other during times of need while preserving the strong bonds forged through our shared experiences. Our alumni network serves as a platform for collaboration, mentorship, and celebration of achievements, ensuring that our connections endure beyond our time together. Together, we strive to uphold the values and spirit of Elieb Visions, enriching our lives and contributing positively to our communities.</p>
+        <p>The group was founded with the dual purpose of fostering mutual support among its members and nurturing lasting relationships. We envisioned a community where former members could lean on each other during times of need while preserving the strong bonds forged through our shared experiences. Our alumni network serves as a platform for collaboration, mentorship in ensuring that our connections endure beyond our time together. Together, we strive to uphold the values and spirit of Elieb Visions, enriching our lives and contributing positively to our communities.</p>
         <article>
-            <div><a href="#">Members List</a></div>
-            <div><a href="#">Let's Chat</a></div>
+            <div><a href="{{path('membersList')}}">List of Members</a></div>
+            <div><a href="{{ path('myAccount')}}">My Account</a></div>
+            
         </article>
         <article>
-            <div><a href="#">My Account</a></div>
+            <div><a href="#">Messages</a></div>
+            <div><a href="{{ path('events_list') }}">Events</a></div>
+        </article>
+        <article>
+            
             <div><a href="#">Our Constitution</a></div>
+            <div><a href="{{ path('balance') }}">Balance</a></div>
         </article>
     </div>
 </section>

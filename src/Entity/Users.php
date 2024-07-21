@@ -9,9 +9,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[Vich\Uploadable]
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -85,11 +89,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: GroupMessage::class, mappedBy: 'groupRecipient')]
     private Collection $groupRecipient;
 
-    #[ORM\ManyToOne(inversedBy: 'userProfileImage')]
-    private ?Images $profileImage = null;
-
     #[ORM\Column]
     private ?int $registrationAmount = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToOne(inversedBy: 'usersProfileImage', cascade: ['persist', 'remove'])]
+    private ?Images $profileImage = null;
 
     public function __construct()
     {
@@ -383,19 +390,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function getProfileImage(): ?Images
-    {
-        return $this->profileImage;
-    }
-
-    public function setProfileImage(?Images $profileImage): static
-    {
-        $this->profileImage = $profileImage;
-
-        return $this;
-    }
-
+    
     public function getRegistrationAmount(): ?int
     {
         return $this->registrationAmount;
@@ -437,6 +432,35 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         $this->nextOfKins = $nextOfKins;
 
         return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getProfileImage(): ?Images
+    {
+        return $this->profileImage;
+    }
+
+    public function setProfileImage(?Images $profileImage): static
+    {
+        $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->lastName . ' ' . $this->email;
     }
 
 }

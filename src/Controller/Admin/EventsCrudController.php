@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 
 class EventsCrudController extends AbstractCrudController
 {
@@ -15,14 +17,14 @@ class EventsCrudController extends AbstractCrudController
         return Events::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
+            IdField::new('id')->hideOnForm(),
             TextField::new('title'),
-            TextEditorField::new('description'),
+            TextField::new('description'),
+            DateTimeField::new('eventDate')->setFormat('yyyy-MM-dd HH:mm:ss'),
+            NumberField::new('cost'),
         ];
     }
-    */
 }

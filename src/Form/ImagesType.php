@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\GroupMessage;
 use App\Entity\Images;
 use App\Entity\PrivateMessage;
+use App\Entity\Users;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +17,6 @@ class ImagesType extends AbstractType
     {
         $builder
             ->add('fileName')
-            ->add('path')
             ->add('size')
             ->add('uploadedAt', null, [
                 'widget' => 'single_text',
@@ -30,6 +30,10 @@ class ImagesType extends AbstractType
                 'class' => PrivateMessage::class,
                 'choice_label' => 'id',
                 'multiple' => true,
+            ])
+            ->add('usersProfileImage', EntityType::class, [
+                'class' => Users::class,
+                'choice_label' => 'id',
             ])
         ;
     }

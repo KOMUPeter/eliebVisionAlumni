@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Repository\ImagesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ImagesRepository::class)]
+#[Vich\Uploadable]
 class Images
 {
     #[ORM\Id]
@@ -15,20 +19,23 @@ class Images
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $fileName = null;
+    #[Vich\UploadableField(mapping: 'images_files_products', fileNameProperty: 'fileName', size: 'size')]
+    #[Assert\File(
+        maxSize: '1M', // Limit file size to 500KB for profile pictures
+        mimeTypes: ['image/jpeg', 'image/png', 'image/gif'],
+        mimeTypesMessage: 'Please upload a valid image file (JPEG, PNG, GIF).'
+    )]
+    private ?File $file = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $path = null;
+    private ?string $fileName = null;
 
     #[ORM\Column]
     private ?int $size = null;
 
-    /**
-     * @var Collection<int, Users>
-     */
-    #[ORM\OneToMany(targetEntity: Users::class, mappedBy: 'profileImage')]
-    private Collection $userProfileImage;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $uploadedAt = null;
+
 
     /**
      * @var Collection<int, GroupMessage>
@@ -42,12 +49,12 @@ class Images
     #[ORM\ManyToMany(targetEntity: PrivateMessage::class, inversedBy: 'privateImages')]
     private Collection $privateImages;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $uploadedAt = null;
+    #[ORM\OneToOne(mappedBy: 'profileImage', cascade: ['persist', 'remove'])]
+    private ?Users $usersProfileImage = null;
+
 
     public function __construct()
     {
-        $this->userProfileImage = new ArrayCollection();
         $this->groupImages = new ArrayCollection();
         $this->privateImages = new ArrayCollection();
     }
@@ -62,23 +69,38 @@ class Images
         return $this->fileName;
     }
 
-    public function setFileName(string $fileName): static
+    public function setFileName(?string $fileName): static
     {
         $this->fileName = $fileName;
 
         return $this;
     }
 
-    public function getPath(): ?string
+    public function getFile(): ?File
     {
-        return $this->path;
+        return $this->file;
     }
 
-    public function setPath(string $path): static
+    public function setFile(?File $file = null): static
     {
-        $this->path = $path;
+        $this->file = $file;
+
+        if (null !== $file) {
+            $this->uploadedAt = new \DateTimeImmutable();
+        }
 
         return $this;
+    }
+    // Example of using Doctrine lifecycle callbacks to ensure size is always set
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function ensureSizeIsSet(): void
+    {
+        if ($this->size === null && $this->file instanceof File) {
+            $this->size = $this->file->getSize();
+        }
     }
 
     public function getSize(): ?int
@@ -86,39 +108,21 @@ class Images
         return $this->size;
     }
 
-    public function setSize(int $size): static
+    public function setSize(?int $size): static
     {
         $this->size = $size;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Users>
-     */
-    public function getUserProfileImage(): Collection
+    public function getUploadedAt(): ?\DateTimeImmutable
     {
-        return $this->userProfileImage;
+        return $this->uploadedAt;
     }
 
-    public function addUserProfileImage(Users $userProfileImage): static
+    public function setUploadedAt(\DateTimeImmutable $uploadedAt): static
     {
-        if (!$this->userProfileImage->contains($userProfileImage)) {
-            $this->userProfileImage->add($userProfileImage);
-            $userProfileImage->setProfileImage($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserProfileImage(Users $userProfileImage): static
-    {
-        if ($this->userProfileImage->removeElement($userProfileImage)) {
-            // set the owning side to null (unless already changed)
-            if ($userProfileImage->getProfileImage() === $this) {
-                $userProfileImage->setProfileImage(null);
-            }
-        }
+        $this->uploadedAt = $uploadedAt;
 
         return $this;
     }
@@ -171,26 +175,35 @@ class Images
         return $this;
     }
 
-    public function getUploadedAt(): ?\DateTimeImmutable
-    {
-        return $this->uploadedAt;
-    }
-
-    public function setUploadedAt(\DateTimeImmutable $uploadedAt): static
-    {
-        $this->uploadedAt = $uploadedAt;
-
-        return $this;
-    }
-
     public function __toString(): string
     {
         return sprintf(
-            'Image #%d: %s at %s (%d bytes)',
+            'Image #%d: %s (%d bytes)',
             $this->id,
             $this->fileName,
-            $this->path,
             $this->size
         );
+    }
+
+    public function getUsersProfileImage(): ?Users
+    {
+        return $this->usersProfileImage;
+    }
+
+    public function setUsersProfileImage(?Users $usersProfileImage): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($usersProfileImage === null && $this->usersProfileImage !== null) {
+            $this->usersProfileImage->setProfileImage(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($usersProfileImage !== null && $usersProfileImage->getProfileImage() !== $this) {
+            $usersProfileImage->setProfileImage($this);
+        }
+
+        $this->usersProfileImage = $usersProfileImage;
+
+        return $this;
     }
 }

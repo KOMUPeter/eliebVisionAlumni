@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Our Constitution{% endblock %}
+
+{% block body %}
+    <h2>Our Constitution</h2>
+    <p>You can read our constitution online or download it:</p>
+    <a href="{{ asset('docs/constitution.pdf') }}" target="_blank">Read Online</a>
+    <br>
+    <a href="{{ asset('docs/constitution.pdf') }}" download>Download PDF</a>
+{% endblock %}

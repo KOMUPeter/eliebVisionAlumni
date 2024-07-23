@@ -1,0 +1,11 @@
+{# templates/error/error.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}An Error Occurred{% endblock %}
+
+{% block body %}
+    <h1>An Error Occurred</h1>
+    <p>{{ message|default('Sorry, something went wrong. Please try again later.') }}</p>
+    <p><a href="{{ path('app_home_page') }}">Go to the home page</a></p>
+{% endblock %}

@@ -114,6 +114,78 @@ body {
     font-size: 40px; /* Font size change on hover */
 }
 
+/* ******************** terms and condations ******************** */
+/* Add this CSS to your stylesheet */
+
+.termsAndCondations {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.termsAndCondations h2, .termsAndCondations h3 {
+    margin-top: 20px;
+    color: #333;
+}
+
+.termsAndCondations ul {
+    margin: 0;
+    padding: 0;
+    list-style: none; /* Remove default bullet points */
+}
+
+.termsAndCondations li {
+    margin-bottom: 10px;
+    padding-left: 20px; /* Indent list items */
+    position: relative;
+    
+}
+
+.termsAndCondations li:before {
+    content: "•"; /* Bullet symbol */
+    color: #007bff; /* Color of the bullet */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2em; /* Size of the bullet */
+}
+
+/* ******************** privacy ******************** */
+/* Basic styles for the Privacy Policy page */
+.privacyPolicy {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.privacyPolicy h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.privacyPolicy h3 {
+    color: #34495e;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.privacyPolicy p {
+    margin-bottom: 20px;
+}
+
+.privacyPolicy ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.privacyPolicy ul li {
+    margin-bottom: 10px;
+}
+
+.privacyPolicy ul li strong {
+    color: #166bc0;
+}
+
 /* ******************** footer ******************** */
 footer {
     display: flex;

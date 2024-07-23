@@ -27,3 +27,9 @@
 # images
 public/images*
 !public/images/.gitignore
+
+# Ignore Node.js dependencies
+/node_modules/
+
+# Ignore build artifacts
+/public/build/

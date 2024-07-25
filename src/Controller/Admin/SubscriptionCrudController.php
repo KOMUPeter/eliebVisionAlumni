@@ -21,7 +21,7 @@ class SubscriptionCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
+            // IdField::new('id')->hideOnForm(),
             NumberField::new('SubscriptionAmount'),
             DateField::new('DateOFsubscription')->setFormat('yyyy-MM-dd'),
             AssociationField::new('UserInscription'),

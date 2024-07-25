@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class MembersListController extends AbstractController
 {
     #[Route('/membersList', name: 'membersList')]
+    #[IsGranted('ROLE_USER')]
     public function membersList(UsersRepository $usersRepository): Response
     {
 

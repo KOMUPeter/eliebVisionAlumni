@@ -22,7 +22,32 @@
             <p><strong>Next of Kins:</strong> {{ user.nextOfKins }}</p>
             <p><strong>Next of Kin Tel:</strong> {{ user.nextOfKinTel }}</p>
             <br>
-            
+
+            <h5 class="card-title text-center">Payment Information</h5>
+            <p>Total Paid: {{ totalPaid }}</p>
+            <p>Total Due: {{ totalDue }}</p>
+            <p>Payment Status: {{ paymentStatus }}</p>
+
+            {% if amountOverpaid > 0 %}
+                <div>
+                    <p>Amount Overpaid: {{ amountOverpaid }}</p>
+                    <p>Your Next Payment Date will be on : {{ nextPaymentDate ? nextPaymentDate|date('Y-m-d') : 'N/A' }}</p>
+                    <p>Remainder: {{ remainder }}</p>
+                    <p style="color: green;">Thanks for keeping up with the group!</p>
+                </div>
+            {% elseif totalPaid < totalDue %}
+                <div>
+                    <p>Pending Dues: {{ pendingDues }}</p>
+                    <p style="color: red;">Next Payment Date: {{ nextPaymentDate ? nextPaymentDate|date('Y-m-d') : 'N/A' }}</p>
+                    <p>Remainder: {{ remainder }}</p>
+                    <p style="color: red;">{{ message }}</p>
+                </div>
+            {% else %}
+                <div style="color: green;">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
             <!-- Placeholder for heading -->
             <h4 id="passwordHeading">
                 <a href="#" id="changePasswordLink" onclick="togglePasswordForm(event)">Click to Change Password ?</a>

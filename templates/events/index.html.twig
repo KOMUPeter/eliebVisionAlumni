@@ -3,17 +3,59 @@
 {% block title %}Events List{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div>
-        <h1>Events List</h1>
-        <p><a class="nav-link" href="{{ path('app_home_page') }}">Return to home</a></p>
+    <div id="events" class="container">
+
+        <!-- Add Event Form -->
+        {% if form is not null %}
+        <div class="form-wrapper mt-5">
+            <h2>Add a New Event or Disbursement</h2>
+
+        <div class="header-section">
+            <p><a class="nav-link" href="{{ path('app_home_page') }}">Return to home</a></p>
         </div>
 
-        <table class="table">
-            <thead>
+            <div class="eventsdiv">
+                {{ form_start(form, { 'attr': {'class': 'event-form'} }) }}
+                    <div class="form-group">
+                        {{ form_label(form.title, 'Title', { 'label_attr': {'class': 'form-label'} }) }}
+                        {{ form_widget(form.title, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.description, 'Description', { 'label_attr': {'class': 'form-label'} }) }}
+                        {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.type, 'Type', { 'label_attr': {'class': 'form-label'} }) }}
+                        {{ form_widget(form.type, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.personInvolved, 'Person(s) Involved', { 'label_attr': {'class': 'form-label'} }) }}
+                        {{ form_widget(form.personInvolved, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.eventDate, 'Event Date', { 'label_attr': {'class': 'form-label'} }) }}
+                        {{ form_widget(form.eventDate, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.cost, 'Cost', { 'label_attr': {'class': 'form-label'} }) }}
+                        {{ form_widget(form.cost, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                    <button class="btn btn-primary" type="submit">Add Event</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        {% endif %}
+
+        <h2 class="events-title">List of Events</h2>
+
+        <!-- Events Table -->
+        <table class="table mt-4 mb-5 events-table">
+            <thead class="thead-dark">
                 <tr>
                     <th>Title</th>
                     <th>Description</th>
+                    <th>Type</th>
+                    <th>Person(s) Involved</th>
                     <th>Event Date</th>
                     <th>Cost</th>
                 </tr>
@@ -23,12 +65,14 @@
                     <tr>
                         <td>{{ event.title }}</td>
                         <td>{{ event.description }}</td>
+                        <td>{{ event.type }}</td>
+                        <td>{{ event.personInvolved }}</td>
                         <td>{{ event.eventDate|date('Y-m-d H:i') }}</td>
                         <td>{{ event.cost is not null ? event.cost ~ ' KES' : 'Free' }}</td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="4">No events found.</td>
+                        <td colspan="6">No events found.</td>
                     </tr>
                 {% endfor %}
             </tbody>

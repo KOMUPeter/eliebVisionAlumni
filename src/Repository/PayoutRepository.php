@@ -24,6 +24,18 @@ class PayoutRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function findPayoutsSortedByUser($sortField, $sortDirection)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.user', 'u')
+            ->orderBy('u.' . $sortField, $sortDirection)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    
+
     //    public function findOneBySomeField($value): ?Payout
     //    {
     //        return $this->createQueryBuilder('p')

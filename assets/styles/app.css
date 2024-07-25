@@ -11,6 +11,11 @@ body {
 .content {
     flex: 1;
 }
+
+.alert {
+    transition: opacity 1s ease-out;
+}
+
 /* *************** base html page ***************** */
 .logof {
     width: 80px;
@@ -34,8 +39,119 @@ body {
     box-shadow: 0 0 15px rgba(79, 187, 75, 0.1); 
     background-color: #ffffff; 
 }
+/* *************** #events ***************** */
+    /* Styles for the Events Section */
+#events .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#events .header-section h1, 
+#events .header-section p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#events .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+#events .form-wrapper h2 {
+    text-align: center;
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+}
+
+#events .eventsdiv {
+    width: 100%;
+    max-width: 600px;
+}
+
+.eventsdiv .event-form {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#events .event-form .form-group {
+    margin-bottom: 15px;
+}
+
+#events .event-form .form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#events .event-form .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#events .event-form .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px;
+    font-size: 1rem;
+    text-align: center;
+    color: white;
+    border-radius: 4px;
+}
+
+#events .events-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+#events .events-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#events .events-table th, 
+#events .events-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#events .events-table th {
+    background-color: #f8f9fa;
+    color: #343a40;
+    font-weight: bold;
+    text-align: center;
+}
+
+#events .events-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#events .events-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
 /* *************** myaccount ***************** */
 /* Ensure container is centered */
+
+/* styles.css */
+.message-positive {
+    color: green;
+}
+
+.message-negative {
+    color: red;
+}
+
 .myaccountContainer {
     display: flex;
     flex-direction: column;
@@ -149,6 +265,148 @@ body {
     font-size: 1.2em; /* Size of the bullet */
 }
 
+/* ******************** treasurer ******************** */
+.treasurer h2, .treasurer h3 {
+    padding: 30px;
+}
+.treasurer form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+}
+
+/* Style for form groups */
+.treasurer .treasurer .form-group {
+    margin-bottom: 15px;
+}
+
+/* Style for labels */
+.treasurer .form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #495057;
+}
+
+/* Style for form controls (input, select, textarea) */
+.treasurer .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Style for buttons */
+.treasurer .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.treasurer .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Style for secondary buttons */
+.treasurer .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.treasurer .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Style for error messages */
+.treasurer .form-errors {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Flash messages */
+.treasurer .flash-success {
+    color: green;
+    border: 1px solid green;
+    background-color: #e6ffe6; /* Light green background */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.treasurer .flash-error {
+    color: red;
+    border: 1px solid red;
+    background-color: #ffe6e6; /* Light red background */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Table styles */
+.treasurer .table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.treasurer .table th,
+.treasurer .table td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.treasurer .table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+    color: #495057;
+}
+
+.treasurer .table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.treasurer .table tbody tr:hover {
+    background-color: #e2e6ea;
+}
+
+/* Heading styles */
+.treasurer h2, .treasurer h3 {
+    text-align: center;
+    color: #343a40;
+}
+
+.treasurer h2 {
+    margin-bottom: 20px;
+}
+
+.treasurer h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+
+/* Additional styling for consistent layout */
+.alert {
+    transition: opacity 1s ease-out;
+}
 /* ******************** privacy ******************** */
 /* Basic styles for the Privacy Policy page */
 .privacyPolicy {

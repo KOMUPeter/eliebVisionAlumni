@@ -41,14 +41,15 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/$, roles: ROLE_USER }
+        - { path: ^/home|error|events|membersList|myAccount|constitution, roles: ROLE_USER }
+        - { path: ^/terms_and_condations|privacy|balance, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
         # Only secretaries can access secretary files
-        - { path: ^/secretary, roles: ROLE_SECRETARY }
+        - { path: ^/secretary, roles: [ROLE_SECRETARY, ROLE_ADMIN] }
 
         # Only treasurers can access treasurer files
-        - { path: ^/treasurer, roles: ROLE_TREASURER }
+        - { path: ^/add-payout|add-events, roles: [ROLE_TREASURER, ROLE_ADMIN] }
 
 when@test:
     security:

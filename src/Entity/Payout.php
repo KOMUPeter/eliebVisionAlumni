@@ -14,9 +14,6 @@ class Payout
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $paydate = null;
-
     #[ORM\Column]
     private ?int $amount = null;
 
@@ -30,18 +27,6 @@ class Payout
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPaydate(): ?\DateTimeInterface
-    {
-        return $this->paydate;
-    }
-
-    public function setPaydate(\DateTimeInterface $paydate): static
-    {
-        $this->paydate = $paydate;
-
-        return $this;
     }
 
     public function getAmount(): ?int
@@ -69,9 +54,9 @@ class Payout
     }
     public function __toString(): string
     {
-        return sprintf('Payout #%d: %d on %s', $this->id, 
+        return sprintf('Payout #%d: %d', $this->id, 
         $this->amount, 
-        $this->paydate->format('Y-m-d'));
+        );
     }
 
     public function getMonth(): ?\DateTimeInterface

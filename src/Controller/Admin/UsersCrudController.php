@@ -45,7 +45,7 @@ class UsersCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [
-            IdField::new('id')->hideOnForm(),
+            // IdField::new('id')->hideOnForm(),
             EmailField::new('email'),
             ChoiceField::new('roles')
                 ->setChoices([

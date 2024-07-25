@@ -1,12 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Balance{% endblock %}
+{% block title %}Balance and Payout List{% endblock %}
 
 {% block body %}
-    <h2>Balance</h2>
-    <p><a class="nav-link" href="{{ path('myAccount') }}">My Account</a></p>
-    <p>Total Registration Amount: {{ balance.totalRegistrations }}</p>
-    <p>Total Payments Amount Made: {{ balance.totalMonthlyPayments }}</p>
-    <p>Total Events Cost: {{ balance.totalEventsCost }}</p>
-    <p>Balance: {{ balance.balance }}</p>
+    <!-- Center-aligned Card Section -->
+    <div id="balance" class="container-fluid d-flex align-items-center justify-content-center pt-5">
+        <div class="row w-100 d-flex justify-content-center pt-4 pt-m-0">
+            <div class="col-lg-6 col-md-8 col-sm-10 pt-5 pt-m-0">
+                <!-- Card for Balance Information -->
+                <div class="card p-4 shadow-sm" style="width: 100%; max-width: 600px;">
+                    <div class="card-header">
+                        <h2 class="card-title">Balance</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Links -->
+                        <div class="mb-3">
+                            <a class="btn btn-secondary" href="{{ path('myAccount') }}">My Account</a>
+                        </div>
+                        {% if is_granted('ROLE_TREASURER') or is_granted('ROLE_ADMIN') %}
+                            <div class="mb-3">
+                                <a class="btn btn-primary" href="{{ path('add_payout') }}">Add a Payment</a>
+                            </div>
+                        {% endif %}
+                        <!-- Balance Details -->
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                Total Registration Amount: <strong>{{ balance.totalRegistrations }} KES</strong>
+                            </li>
+                            <li class="list-group-item">
+                                Total Payments Amount Made: <strong>{{ balance.totalMonthlyPayments }} KES</strong>
+                            </li>
+                            <li class="list-group-item">
+                                Total Events Cost: <strong>{{ balance.totalEventsCost }} KES</strong>
+                            </li>
+                            <li class="list-group-item">
+                                Balance: <strong>{{ balance.balance }} KES</strong>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

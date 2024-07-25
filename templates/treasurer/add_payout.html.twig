@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Payout{% endblock %}
+
+{% block body %}
+<div class="treasurer">
+    <h2>Add a Payment</h2>
+
+    {# Flash Messages #}
+    {% for label, messages in app.flashes %}
+        <div class="alert flash-{{ label }}" id="flash-{{ loop.index }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+
+    <div class="form-group">
+        {{ form_label(form.amount, 'Amount', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.amount, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.amount) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.month, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.month, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.month) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.user, 'User', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.user) }}
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Add Payout</button>
+    </div>
+
+    {{ form_end(form) }}
+
+    {# Search Form #}
+    <h3>Search for Payments</h3>
+    <form method="get" action="{{ path('add_payout') }}">
+        <input type="text" name="searchTerm" value="{{ searchTerm }}" placeholder="Search by last name">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {# List of Payments #}
+    <h3>Payments List</h3>
+    {% if searchTerm and payments is empty %}
+        <p>No payments found for "{{ searchTerm }}". <a href="{{ path('add_payout') }}">View all payments</a></p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Alumnis' Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.amount }}</td>
+                        <td>{{ payment.month ? payment.month|date('Y-m-d') : 'N/A' }}</td>
+                        <td>
+                            {{ payment.user.firstName }} <span style="margin-right: 10px;"></span> {{ payment.user.lastName }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">No payments found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {# Show button only if we are not showing all payments #}
+        {% if not showAll %}
+            <button id="show-full-list" class="btn btn-secondary">See Full List</button>
+        {% endif %}
+
+        <p><a href="{{ path('add_payout') }}">Return to payment list </a></p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var showFullListButton = document.getElementById('show-full-list');
+
+        if (showFullListButton) {
+            showFullListButton.addEventListener('click', function() {
+                window.location.href = '{{ path('add_payout', { showAll: true }) }}';
+            });
+        }
+
+        // Handle flash messages
+        var flashMessages = document.querySelectorAll('[id^="flash-"]');
+        setTimeout(function() {
+            flashMessages.forEach(function(message) {
+                message.style.opacity = 0;
+                // Optionally, remove the element from the DOM
+                // message.remove();
+            });
+        }, 3000);
+    });
+</script>
+
+{% endblock %}

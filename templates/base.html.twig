@@ -12,7 +12,6 @@
     {# <link rel="stylesheet" href="{{ asset('css/normalize.css') }}"> #}
     <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
     {% endblock %}
-    
 </head>
 <body>
     {% block nav %}
@@ -36,9 +35,24 @@
                     </li>
                     {% endif %}
 
-                    {% if is_granted('ROLE_ADMIN') %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin') }}">Admin Dashboard</a>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SECRETARY') or is_granted('ROLE_TREASURER') %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Roles
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <li><a class="dropdown-item" href="{{ path('admin') }}">Admin Dashboard</a></li>
+                            {% endif %}
+                            
+                            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SECRETARY') %}
+                            <li><a class="dropdown-item" href="{{ path('app_secretary') }}">Secretary Page</a></li>
+                            {% endif %}
+                            
+                            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_TREASURER') %}
+                            <li><a class="dropdown-item" href="{{ path('add_payout') }}">Treasurer Page</a></li>
+                            {% endif %}
+                        </ul>
                     </li>
                     {% endif %}
 
@@ -62,7 +76,7 @@
         <nav class="container">
             <ul>
                 <li>
-                    <a aria-current="page" href = "{{ path('terms_and_condations') }}"> Terms & Conditions</a>
+                    <a aria-current="page" href="{{ path('terms_and_condations') }}">Terms & Conditions</a>
                 </li>
                 <li>
                     <a href="{{ path('app_home_page') }}"><img class="logof" src="{{ asset('images/eliebLogo.png') }}" alt="Logo"></a>

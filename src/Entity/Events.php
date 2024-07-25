@@ -26,6 +26,13 @@ class Events
     #[ORM\Column(nullable: true)]
     private ?int $cost = null;
 
+    #[ORM\Column(length: 255)]
+    #[Assert\Choice(choices: ['Disbursement', 'GroupHappenings'], message: 'Choose a valid type.')]
+    private ?string $type = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $personInvolved = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +82,30 @@ class Events
     public function setCost(?int $cost): static
     {
         $this->cost = $cost;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getPersonInvolved(): ?string
+    {
+        return $this->personInvolved;
+    }
+
+    public function setPersonInvolved(string $personInvolved): static
+    {
+        $this->personInvolved = $personInvolved;
 
         return $this;
     }

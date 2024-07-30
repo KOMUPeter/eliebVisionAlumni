@@ -25,13 +25,13 @@
                 <ul class="navbar-nav">
                     {% if is_granted('ROLE_USER') %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_home_page') }}">Home</a>
+                        <a class="nav-link {{ app.request.get('_route') == 'app_home_page' ? 'active' : '' }}" href="{{ path('app_home_page') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('myAccount') }}">My Account</a>
+                        <a class="nav-link {{ app.request.get('_route') == 'myAccount' ? 'active' : '' }}" href="{{ path('myAccount') }}">My Account</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('balance') }}">Balance</a>
+                        <a class="nav-link {{ app.request.get('_route') == 'balance' ? 'active' : '' }}" href="{{ path('balance') }}">Balance</a>
                     </li>
                     {% endif %}
 
@@ -42,15 +42,15 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             {% if is_granted('ROLE_ADMIN') %}
-                            <li><a class="dropdown-item" href="{{ path('admin') }}">Admin Dashboard</a></li>
+                            <li><a class="dropdown-item {{ app.request.get('_route') == 'admin' ? 'active' : '' }}" href="{{ path('admin') }}">Admin Dashboard</a></li>
                             {% endif %}
                             
                             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SECRETARY') %}
-                            <li><a class="dropdown-item" href="{{ path('app_secretary') }}">Secretary Page</a></li>
+                            <li><a class="dropdown-item {{ app.request.get('_route') == 'secretary_users' ? 'active' : '' }}" href="{{ path('secretary_users') }}">Secretary Page</a></li>
                             {% endif %}
                             
                             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_TREASURER') %}
-                            <li><a class="dropdown-item" href="{{ path('add_payout') }}">Treasurer Page</a></li>
+                            <li><a class="dropdown-item {{ app.request.get('_route') == 'add_payout' ? 'active' : '' }}" href="{{ path('add_payout') }}">Treasurer Page</a></li>
                             {% endif %}
                         </ul>
                     </li>
@@ -58,7 +58,7 @@
 
                     {% if is_granted('ROLE_USER') %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout') }}">Sign out</a>
+                        <a class="nav-link {{ app.request.get('_route') == 'app_logout' ? 'active' : '' }}" href="{{ path('app_logout') }}">Sign out</a>
                     </li>
                     {% endif %}
                 </ul>

@@ -40,12 +40,13 @@ class MyAccountController extends AbstractController
         // Calculate total amount due
         $subscriptionStartDate = $user->getUpdatedAt();
         $currentDate = new \DateTimeImmutable();
-        $monthsSubscribed = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m + 1;
+        $monthsSubscribed = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m;
 
         $totalDue = 0;
+        $dueDate = clone $subscriptionStartDate;
         for ($i = 0; $i < $monthsSubscribed; $i++) {
-            $month = $subscriptionStartDate->modify("+$i months");
-            $totalDue += ($month >= new \DateTimeImmutable('2024-01-01')) ? 500 : 300;
+            $dueDate = $dueDate->modify("+1 month");
+            $totalDue += ($dueDate >= new \DateTimeImmutable('2023-01-01')) ? 500 : 300;
         }
 
         // Determine if the user is overpaid or has pending dues
@@ -61,7 +62,7 @@ class MyAccountController extends AbstractController
             // Calculate the next payment date for overpaid amount
             $remainingBalance = $amountOverpaid;
             $nextPaymentDate = clone $subscriptionStartDate;
-            $monthlyRate = $subscriptionStartDate >= new \DateTimeImmutable('2024-01-01') ? 500 : 300;
+            $monthlyRate = $subscriptionStartDate >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
 
             while ($remainingBalance >= $monthlyRate) {
                 $nextPaymentDate = $nextPaymentDate->modify("+1 month");
@@ -76,7 +77,7 @@ class MyAccountController extends AbstractController
             // Calculate the next payment date for pending dues
             $remainingBalance = $pendingDues;
             $nextPaymentDate = clone $subscriptionStartDate;
-            $monthlyRate = $subscriptionStartDate >= new \DateTimeImmutable('2024-01-01') ? 500 : 300;
+            $monthlyRate = $subscriptionStartDate >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
 
             while ($remainingBalance > 0) {
                 $nextPaymentDate = $nextPaymentDate->modify("+1 month");
@@ -87,6 +88,12 @@ class MyAccountController extends AbstractController
             $remainder = abs($remainingBalance);
             $message = "Please settle your outstanding balance, which was due before " . $nextPaymentDate->format('Y-m-d');
             $messageType = 'negative';
+        }
+
+        // Calculate months of no payment
+        $monthsOfNoPayment = 0;
+        if ($pendingDues > 0) {
+            $monthsOfNoPayment = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m - (int)($totalPaid / $monthlyRate);
         }
 
         // Create and handle form
@@ -121,7 +128,7 @@ class MyAccountController extends AbstractController
             'pendingDues' => $pendingDues,
             'message' => $message,
             'messageType' => $messageType, // 'positive' or 'negative'
+            'monthsOfNoPayment' => $monthsOfNoPayment
         ]);
-        
     }
 }

@@ -31,15 +31,13 @@
             {% if amountOverpaid > 0 %}
                 <div>
                     <p>Amount Overpaid: {{ amountOverpaid }}</p>
-                    <p>Your Next Payment Date will be on : {{ nextPaymentDate ? nextPaymentDate|date('Y-m-d') : 'N/A' }}</p>
-                    <p>Remainder: {{ remainder }}</p>
+                    <p>Your Next Payment Date will be on: {{ nextPaymentDate ? nextPaymentDate|date('Y-m-d') : 'N/A' }}</p>
                     <p style="color: green;">Thanks for keeping up with the group!</p>
                 </div>
-            {% elseif totalPaid < totalDue %}
+            {% elseif pendingDues > 0 %}
                 <div>
                     <p>Pending Dues: {{ pendingDues }}</p>
-                    <p style="color: red;">Next Payment Date: {{ nextPaymentDate ? nextPaymentDate|date('Y-m-d') : 'N/A' }}</p>
-                    <p>Remainder: {{ remainder }}</p>
+                    <p>Equivalent to: {{ monthsOfNoPayment }} months of non-payment</p>
                     <p style="color: red;">{{ message }}</p>
                 </div>
             {% else %}

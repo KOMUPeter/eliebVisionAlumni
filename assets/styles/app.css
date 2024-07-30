@@ -16,6 +16,7 @@ body {
     transition: opacity 1s ease-out;
 }
 
+
 /* *************** base html page ***************** */
 .logof {
     width: 80px;
@@ -140,8 +141,54 @@ body {
     background-color: #f1f1f1;
 }
 
+/* *************** secretary ***************** */
+#secretary {
+    padding: 20px;
+}
+
+#secretary h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#secretary table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#secretary th, #secretary td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#secretary th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+#secretary td {
+    background-color: #fff;
+}
+
+#secretary .status-ok, #secretary .amount-ok {
+    color: green;
+}
+
+#secretary .status-overpaid, #secretary .amount-overpaid {
+    color: skyblue;
+}
+
+#secretary .status-pending, #secretary .amount-pending {
+    color: red;
+}
+
+#secretary .status-default, #secretary .amount-default {
+    color: black;
+}
+
 /* *************** myaccount ***************** */
-/* Ensure container is centered */
 
 /* styles.css */
 .message-positive {

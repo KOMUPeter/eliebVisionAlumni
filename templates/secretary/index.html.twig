@@ -1,20 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SecretaryController!{% endblock %}
+{% block title %}User Details{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div id="secretary">
+        <h1>Alumni List</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <!-- Filter Form -->
+        <form method="get" action="{{ path('secretary_users') }}">
+            <label for="status">Filter by Status:</label>
+            <select name="status" id="status" onchange="this.form.submit()">
+                <option value="all" {% if statusFilter == 'all' %}selected{% endif %}>All</option>
+                <option value="All months paid" {% if statusFilter == 'All months paid' %}selected{% endif %}>All months paid</option>
+                <option value="Over-paid" {% if statusFilter == 'Over-paid' %}selected{% endif %}>Over-paid</option>
+                <option value="Pending Dues" {% if statusFilter == 'Pending Dues' %}selected{% endif %}>Pending Dues</option>
+                <option value="Account Dormant" {% if statusFilter == 'Account Dormant' %}selected{% endif %}>Account Dormant</option>
+            </select>
+        </form>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/eliebVisionsAlumni/src/Controller/SecretaryController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/eliebVisionsAlumni/templates/secretary/index.html.twig</code></li>
-    </ul>
-</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Alumni</th>
+                    <th>Tel</th>
+                    <th>Email</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                    <th>Unpaid Months</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in userData %}
+                    <tr>
+                        <td>{{ item.user.firstName ~ ' ' ~ item.user.lastName }}</td>
+                        <td>{{ item.user.phoneNumber }}</td>
+                        <td>{{ item.user.email }}</td>
+                        <td class="{% if item.status == 'All months paid' %}amount-ok{% elseif item.status == 'Over-paid' %}amount-overpaid{% elseif item.status == 'Pending Dues' %}amount-pending{% elseif item.status == 'Account Dormant' %}amount-dormant{% else %}amount-default{% endif %}">
+                            {{ item.amount ~ ' KES' }}
+                        </td>
+                        <td class="{% if item.status == 'All months paid' %}status-ok{% elseif item.status == 'Over-paid' %}status-overpaid{% elseif item.status == 'Pending Dues' %}status-pending{% elseif item.status == 'Account Dormant' %}status-dormant{% else %}status-default{% endif %}">
+                            {{ item.status }}
+                        </td>
+                        <td>{{ item.unpaidMonths }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

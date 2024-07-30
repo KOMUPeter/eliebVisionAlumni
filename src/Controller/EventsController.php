@@ -32,7 +32,7 @@ class EventsController extends AbstractController
         
         // Create a new event and form only if the user has the 'ROLE_TREASURE' role
         $form = null;
-        if ($this->isGranted('ROLE_TREASURER') || $this->isGranted('ROLE_ADMIN')) {
+        if ($this->isGranted('ROLE_TREASURER') || $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SECRETARY')) {
             $event = new Events();
             $form = $this->createForm(EventType::class, $event);
             $form->handleRequest($request);

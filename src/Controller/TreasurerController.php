@@ -60,60 +60,72 @@ class TreasurerController extends AbstractController
     public function addPayout(Request $request): Response
     {
         $payout = new Payout();
-        $form = $this->createForm(PayoutType::class, $payout);
-        $form->handleRequest($request);
-
-        // Retrieve sorting, search, and showAll parameters from the request
-        $sortField = $request->query->get('sortField', 'firstName');
-        $sortDirection = $request->query->get('sortDirection', 'asc');
-        $searchTerm = $request->query->get('searchTerm', '');
-        $showAll = (bool) $request->query->get('showAll', false); // Convert to boolean
-
-        // Validate the sortField
-        if (!in_array($sortField, ['firstName', 'lastName'], true)) {
-            $sortField = 'firstName';
-        }
-
-        // Create the query builder for fetching sorted and filtered payments
-        $queryBuilder = $this->entityManager->getRepository(Payout::class)
-            ->createQueryBuilder('p')
-            ->leftJoin('p.user', 'u')
-            ->addSelect('u');
-
-        // Apply search filter if search term is provided
-        if ($searchTerm) {
-            $queryBuilder->andWhere('u.lastName LIKE :searchTerm')
-                ->setParameter('searchTerm', '%' . $searchTerm . '%');
-        }
-
-        // Apply sorting
-        $queryBuilder->orderBy('u.' . $sortField, $sortDirection);
-
-        // Apply pagination
-        if (!$showAll) {
-            $queryBuilder->setMaxResults(10); // Show only the first 10 items
-        }
-
-        $payments = $queryBuilder->getQuery()->getResult();
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $this->entityManager->persist($payout);
-                $this->entityManager->flush();
-                $this->addFlash('success', 'Payment added successfully.');
-                return $this->redirectToRoute('add_payout');
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'An error occurred: ' . $e->getMessage());
-            }
-        }
-
-        return $this->render('treasurer/add_payout.html.twig', [
-            'form' => $form->createView(),
-            'payments' => $payments,
-            'sortField' => $sortField,
-            'sortDirection' => $sortDirection,
-            'searchTerm' => $searchTerm,
-            'showAll' => $showAll,
-        ]);
+        return $this->handlePayoutForm($request, $payout);
     }
+
+    #[Route('/edit-payout/{id}', name: 'edit_payout')]
+    public function editPayout(Request $request, Payout $payout): Response
+    {
+        return $this->handlePayoutForm($request, $payout);
+    }
+    
+    private function handlePayoutForm(Request $request, Payout $payout): Response
+{
+    $form = $this->createForm(PayoutType::class, $payout);
+    $form->handleRequest($request);
+
+    // Retrieve sorting, search, and showAll parameters from the request
+    $sortField = $request->query->get('sortField', 'firstName');
+    $sortDirection = $request->query->get('sortDirection', 'asc');
+    $searchTerm = $request->query->get('searchTerm', '');
+    $showAll = (bool) $request->query->get('showAll', false); // Convert to boolean
+
+    // Validate the sortField
+    if (!in_array($sortField, ['firstName', 'lastName'], true)) {
+        $sortField = 'firstName';
+    }
+
+    // Create the query builder for fetching sorted and filtered payments
+    $queryBuilder = $this->entityManager->getRepository(Payout::class)
+        ->createQueryBuilder('p')
+        ->leftJoin('p.user', 'u')
+        ->addSelect('u');
+
+    // Apply search filter if search term is provided
+    if ($searchTerm) {
+        $queryBuilder->andWhere('u.firstName LIKE :searchTerm OR u.lastName LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%');
+    }
+
+    // Apply sorting
+    $queryBuilder->orderBy('u.' . $sortField, $sortDirection);
+
+    // Apply pagination
+    if (!$showAll) {
+        $queryBuilder->setMaxResults(10); // Show only the first 10 items
+    }
+
+    $payments = $queryBuilder->getQuery()->getResult();
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        try {
+            $this->entityManager->persist($payout);
+            $this->entityManager->flush();
+            $this->addFlash('success', $payout->getId() ? 'Payment updated successfully.' : 'Payment added successfully.');
+            return $this->redirectToRoute('add_payout');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    return $this->render('treasurer/add_payout.html.twig', [
+        'form' => $form->createView(),
+        'payments' => $payments,
+        'sortField' => $sortField,
+        'sortDirection' => $sortDirection,
+        'searchTerm' => $searchTerm,
+        'showAll' => $showAll,
+    ]);
+}
+
 }

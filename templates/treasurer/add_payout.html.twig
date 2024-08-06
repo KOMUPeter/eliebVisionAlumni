@@ -44,7 +44,7 @@
     {# Search Form #}
     <h3>Search for Payments</h3>
     <form method="get" action="{{ path('add_payout') }}">
-        <input type="text" name="searchTerm" value="{{ searchTerm }}" placeholder="Search by last name">
+        <input type="text" name="searchTerm" value="{{ searchTerm }}" placeholder="Enter a names">
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
@@ -59,6 +59,7 @@
                     <th>Amount</th>
                     <th>Date</th>
                     <th>Alumnis' Name</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,13 +67,14 @@
                     <tr>
                         <td>{{ payment.amount }}</td>
                         <td>{{ payment.month ? payment.month|date('Y-m-d') : 'N/A' }}</td>
+                        <td>{{ payment.user.firstName }} {{ payment.user.lastName }}</td>
                         <td>
-                            {{ payment.user.firstName }} <span style="margin-right: 10px;"></span> {{ payment.user.lastName }}
+                            <a href="{{ path('edit_payout', { 'id': payment.id }) }}" class="btn btn-secondary">Edit</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="3">No payments found.</td>
+                        <td colspan="4">No payments found.</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -83,7 +85,7 @@
             <button id="show-full-list" class="btn btn-secondary">See Full List</button>
         {% endif %}
 
-        <p><a href="{{ path('add_payout') }}">Return to payment list </a></p>
+        <p><a href="{{ path('add_payout') }}">Return to payment list</a></p>
     {% endif %}
 </div>
 
@@ -102,8 +104,6 @@
         setTimeout(function() {
             flashMessages.forEach(function(message) {
                 message.style.opacity = 0;
-                // Optionally, remove the element from the DOM
-                // message.remove();
             });
         }, 3000);
     });

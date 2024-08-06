@@ -1,9 +1,8 @@
 <?php
-// src/Controller/MyAccountController.php
+
 namespace App\Controller;
 
 use App\Entity\Payout;
-use App\Entity\Users;
 use App\Form\ChangePasswordType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,63 +36,89 @@ class MyAccountController extends AbstractController
         $payouts = $this->entityManager->getRepository(Payout::class)->findBy(['user' => $user], ['month' => 'ASC']);
         $totalPaid = array_sum(array_map(fn($payout) => $payout->getAmount(), $payouts));
 
-        // Calculate total amount due
         $subscriptionStartDate = $user->getUpdatedAt();
         $currentDate = new \DateTimeImmutable();
-        $monthsSubscribed = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m;
+        $monthsSinceUpdate = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m;
+        // Adjust monthsSinceUpdate to include the current month
+        if ($currentDate > $subscriptionStartDate) {
+            $monthsSinceUpdate++; // Include the current month in the total
+        }
 
         $totalDue = 0;
-        $dueDate = clone $subscriptionStartDate;
-        for ($i = 0; $i < $monthsSubscribed; $i++) {
-            $dueDate = $dueDate->modify("+1 month");
-            $totalDue += ($dueDate >= new \DateTimeImmutable('2023-01-01')) ? 500 : 300;
+        $currentDateIter = clone $subscriptionStartDate;
+
+        for ($i = 0; $i < $monthsSinceUpdate; $i++) {
+            $monthlyRate = $currentDateIter >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
+            $totalDue += $monthlyRate;
+
+            // Move to the next month
+            $currentDateIter = $currentDateIter->modify("+1 month");
         }
 
-        // Determine if the user is overpaid or has pending dues
-        $amountOverpaid = $totalPaid - $totalDue;
+        // Calculate how many months the total amount paid covers
+        $monthsCovered = 0;
+        $totalPaidRemaining = $totalPaid;
+        $currentDateIter = clone $subscriptionStartDate;
+        while ($totalPaidRemaining > 0) {
+            $monthlyRate = $currentDateIter >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
+            if ($totalPaidRemaining >= $monthlyRate) {
+                $monthsCovered++;
+                $totalPaidRemaining -= $monthlyRate;
+            } else {
+                break; // No more full months covered
+            }
+            $currentDateIter = $currentDateIter->modify("+1 month");
+        }
+
         $pendingDues = $totalDue - $totalPaid;
+        $unpaidMonths = $pendingDues > 0 ? $monthsSinceUpdate - $monthsCovered : 0;
 
-        $nextPaymentDate = null;
-        $remainder = 0;
-        $message = '';
-        $messageType = '';
-
-        if ($amountOverpaid >= 0) {
-            // Calculate the next payment date for overpaid amount
-            $remainingBalance = $amountOverpaid;
-            $nextPaymentDate = clone $subscriptionStartDate;
-            $monthlyRate = $subscriptionStartDate >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
-
-            while ($remainingBalance >= $monthlyRate) {
-                $nextPaymentDate = $nextPaymentDate->modify("+1 month");
-                $remainingBalance -= $monthlyRate;
-            }
-
-            // Set remainder
-            $remainder = $remainingBalance;
-            $message = 'Thanks for keeping up with the group!';
-            $messageType = 'positive';
+        // Determine the general status
+        if ($pendingDues < 0) {
+            $status = 'Over-paid';
+            $amount = '+' . number_format(abs($pendingDues));
+            $unpaidMonths = 0; // Reset unpaid months if overpaid
+        } elseif ($pendingDues > 0) {
+            $status = 'Pending Dues';
+            $amount = '-' . number_format($pendingDues);
         } else {
-            // Calculate the next payment date for pending dues
-            $remainingBalance = $pendingDues;
-            $nextPaymentDate = clone $subscriptionStartDate;
-            $monthlyRate = $subscriptionStartDate >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
-
-            while ($remainingBalance > 0) {
-                $nextPaymentDate = $nextPaymentDate->modify("+1 month");
-                $remainingBalance -= $monthlyRate;
-            }
-
-            // Set remainder
-            $remainder = abs($remainingBalance);
-            $message = "Please settle your outstanding balance, which was due before " . $nextPaymentDate->format('Y-m-d');
-            $messageType = 'negative';
+            $status = 'All paid';
+            $amount = '00';
         }
 
-        // Calculate months of no payment
-        $monthsOfNoPayment = 0;
-        if ($pendingDues > 0) {
-            $monthsOfNoPayment = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m - (int)($totalPaid / $monthlyRate);
+        // Calculate the coverage date for overpayments
+        $coverageDate = null;
+        if ($pendingDues < 0) {
+            $coverageDate = clone $subscriptionStartDate;
+            $totalPaidRemaining = abs($pendingDues); // Overpaid amount
+
+            while ($totalPaidRemaining > 0) {
+                $monthlyRate = $coverageDate >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
+                if ($totalPaidRemaining >= $monthlyRate) {
+                    $totalPaidRemaining -= $monthlyRate;
+                    $coverageDate = $coverageDate->modify("+1 month");
+                } else {
+                    break;
+                }
+            }
+
+            // Adjust coverage date to the end of the month
+            $coverageDate = $coverageDate->modify('last day of this month');
+        }
+
+        // Determine the next payment date based on pending dues and coverage date
+        $nextPaymentDate = $pendingDues > 0 ? $currentDateIter->format('Y-m-d') : ($coverageDate ? $coverageDate->format('Y-m-d') : 'Any time from Today');
+        $nextPaymentDateMessage = $pendingDues > 0 
+            ? 'You should have cleared your dues before: ' . $nextPaymentDate 
+            : 'Your payments cover until: ' . $nextPaymentDate;
+
+        // Determine account status
+        if ($unpaidMonths > 6) {
+            $accountStatus = 'Account Dormant';
+        } elseif ($unpaidMonths > 0) {
+            $accountStatus = 'Needs to Clear Dues';
+        } else {
+            $accountStatus = 'Account Active';
         }
 
         // Create and handle form
@@ -121,14 +146,16 @@ class MyAccountController extends AbstractController
             'totalDue' => $totalDue,
             'paymentStatus' => $totalPaid >= $totalDue 
                 ? 'Paid up-to-date' 
-                : 'You have Pending',
-            'amountOverpaid' => $amountOverpaid,
+                : 'You have Pending dues',
+            'amountOverpaid' => $pendingDues < 0 ? abs($pendingDues) : 0,
             'nextPaymentDate' => $nextPaymentDate,
-            'remainder' => $remainder,
+            'coverageDate' => $coverageDate ? $coverageDate->format('Y-m-d') : 'Any time from Today',
+            'remainder' => $totalPaidRemaining,
             'pendingDues' => $pendingDues,
-            'message' => $message,
-            'messageType' => $messageType, // 'positive' or 'negative'
-            'monthsOfNoPayment' => $monthsOfNoPayment
+            'message' => $pendingDues > 0 ? 'Please clear your dues' : 'You are up-to-date',
+            'messageType' => $pendingDues > 0 ? 'negative' : 'positive',
+            'monthsOfNoPayment' => $unpaidMonths,
+            'nextPaymentDateMessage' => $nextPaymentDateMessage,
         ]);
     }
 }

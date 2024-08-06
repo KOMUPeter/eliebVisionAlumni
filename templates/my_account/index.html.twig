@@ -18,31 +18,32 @@
                 <span style="color: {{ user.isSubscribed ? 'green' : 'red' }}">
                     {{ user.isSubscribed ? 'Yes' : 'No' }}
                 </span>
-            </p>
+            </p> 
             <p><strong>Next of Kins:</strong> {{ user.nextOfKins }}</p>
             <p><strong>Next of Kin Tel:</strong> {{ user.nextOfKinTel }}</p>
             <br>
 
             <h5 class="card-title text-center">Payment Information</h5>
-            <p>Total Paid: {{ totalPaid }}</p>
             <p>Total Due: {{ totalDue }}</p>
+            <p>Total Paid: {{ totalPaid }}</p>
             <p>Payment Status: {{ paymentStatus }}</p>
 
             {% if amountOverpaid > 0 %}
                 <div>
                     <p>Amount Overpaid: {{ amountOverpaid }}</p>
-                    <p>Your Next Payment Date will be on: {{ nextPaymentDate ? nextPaymentDate|date('Y-m-d') : 'N/A' }}</p>
-                    <p style="color: green;">Thanks for keeping up with the group!</p>
+                    <p>Your payments cover up to: <span style="color: green;">{{ coverageDate }}</span></p>
                 </div>
             {% elseif pendingDues > 0 %}
                 <div>
                     <p>Pending Dues: {{ pendingDues }}</p>
                     <p>Equivalent to: {{ monthsOfNoPayment }} months of non-payment</p>
                     <p style="color: red;">{{ message }}</p>
+                    <p style="color: red;">You should have cleared your dues before: {{ nextPaymentDate }}</p>
                 </div>
             {% else %}
                 <div style="color: green;">
                     <p>{{ message }}</p>
+                    <p>Your next payment date is: {{ nextPaymentDate }}</p>
                 </div>
             {% endif %}
 
@@ -90,4 +91,28 @@
     </div>
 </div>
 
+<script>
+    function togglePasswordForm(event) {
+        event.preventDefault();
+        var form = document.getElementById('passwordForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function togglePasswordVisibility(passwordId, iconId) {
+        var passwordInput = document.getElementById(passwordId);
+        var icon = document.getElementById(iconId);
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Initially hide the password form
+    document.getElementById('passwordForm').style.display = 'none';
+</script>
 {% endblock %}

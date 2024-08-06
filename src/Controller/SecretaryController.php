@@ -36,50 +36,73 @@ class SecretaryController extends AbstractController
 
             $subscriptionStartDate = $user->getUpdatedAt();
             $currentDate = new \DateTimeImmutable();
-            $monthsSubscribed = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m;
+            $monthsSinceUpdate = $subscriptionStartDate->diff($currentDate)->y * 12 + $subscriptionStartDate->diff($currentDate)->m;
+
+            // Adjust monthsSinceUpdate to include the current month
+            if ($currentDate > $subscriptionStartDate) {
+                $monthsSinceUpdate++; // Include the current month in the total
+            }
 
             $totalDue = 0;
-            $unpaidMonths = 0;
-
             $currentDateIter = clone $subscriptionStartDate;
 
-            // Iterate through each month from the start date to the current date
-            for ($i = 0; $i <= $monthsSubscribed; $i++) {
+            // Calculate total due amount
+            for ($i = 0; $i < $monthsSinceUpdate; $i++) {
                 $monthlyRate = $currentDateIter >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
                 $totalDue += $monthlyRate;
 
-                // Check if there's a payment for this month
-                $monthPayouts = array_filter($payouts, fn($payout) => $payout->getMonth()->format('Y-m') === $currentDateIter->format('Y-m'));
-                $monthPaid = array_sum(array_map(fn($payout) => $payout->getAmount(), $monthPayouts));
+                // Move to the next month
+                $currentDateIter = $currentDateIter->modify("+1 month");
+            }
 
-                if ($monthPaid < $monthlyRate) {
-                    $unpaidMonths++;
+            // Calculate how many months the total amount paid covers
+            $monthsCovered = 0;
+            $totalPaidRemaining = $totalPaid;
+            $currentDateIter = clone $subscriptionStartDate;
+            while ($totalPaidRemaining > 0) {
+                $monthlyRate = $currentDateIter >= new \DateTimeImmutable('2023-01-01') ? 500 : 300;
+                if ($totalPaidRemaining >= $monthlyRate) {
+                    $monthsCovered++;
+                    $totalPaidRemaining -= $monthlyRate;
+                } else {
+                    break; // No more full months covered
                 }
-
                 $currentDateIter = $currentDateIter->modify("+1 month");
             }
 
             $pendingDues = $totalDue - $totalPaid;
+            $unpaidMonths = $pendingDues > 0 ? $monthsSinceUpdate - $monthsCovered : 0;
 
-            // Determine status and handle overpayment
+            // Determine the general status
             if ($pendingDues < 0) {
                 $status = 'Over-paid';
                 $amount = '+' . number_format(abs($pendingDues));
-                $unpaidMonths = 0; // No unpaid months if overpaid
+                $unpaidMonths = 0; // Reset unpaid months if overpaid
             } elseif ($pendingDues > 0) {
-                $status = $unpaidMonths > 6 ? 'Account Dormant' : 'Pending Dues';
+                $status = 'Pending Dues';
                 $amount = '-' . number_format($pendingDues);
             } else {
-                $status = 'All months paid';
+                $status = 'All paid';
                 $amount = '00';
-                $unpaidMonths = 0; // Reset to 0 if all months are paid
+            }
+
+            // Determine account status
+            if ($unpaidMonths > 6) {
+                $accountStatus = 'Account Dormant';
+            } elseif ($unpaidMonths > 0) {
+                $accountStatus = 'Needs to Clear Dues';
+            } else {
+                $accountStatus = 'Account Active';
             }
 
             $userData[] = [
                 'user' => $user,
                 'status' => $status,
                 'amount' => $amount,
+                'monthsCovered' => $monthsCovered,
+                'monthsSinceUpdate' => $monthsSinceUpdate,
                 'unpaidMonths' => $unpaidMonths,
+                'accountStatus' => $accountStatus, // New field for account status
             ];
         }
 
@@ -90,10 +113,12 @@ class SecretaryController extends AbstractController
 
         // Define the order of statuses
         $statusOrder = [
-            'All months paid' => 1,
+            'All paid' => 1,
             'Over-paid' => 2,
             'Pending Dues' => 3,
             'Account Dormant' => 4,
+            'Needs to Clear Dues' => 5,
+            'Account Active' => 6,
         ];
 
         // Sort the userData array by status

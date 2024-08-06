@@ -158,9 +158,9 @@ body {
 }
 
 #secretary th, #secretary td {
-    border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    border: 1px solid #ddd;
 }
 
 #secretary th {
@@ -188,6 +188,43 @@ body {
     color: black;
 }
 
+#secretary .status-orange, #secretary .amount-orange {
+    color: orange;
+}
+
+#secretary .status-red, #secretary .amount-red {
+    color: red;
+}
+
+#secretary .account-status-dormant {
+    color: red;
+}
+
+#secretary .account-status-pending {
+    color: orange;
+}
+
+#secretary .account-status-active {
+    color: green;
+}
+
+/* Optional: Style adjustments for better readability */
+#secretary .amount-ok { background-color: #d4edda; }
+#secretary .amount-overpaid { background-color: #cce5ff; }
+#secretary .amount-orange { background-color: #fff3cd; }
+#secretary .amount-red { background-color: #f8d7da; }
+#secretary .amount-default { background-color: #f0f0f0; }
+
+#secretary .status-ok { background-color: #d4edda; }
+#secretary .status-overpaid { background-color: #cce5ff; }
+#secretary .status-orange { background-color: #fff3cd; }
+#secretary .status-red { background-color: #f8d7da; }
+#secretary .status-default { background-color: #f0f0f0; }
+
+#secretary .account-status-dormant { background-color: #f0f0f0; }
+#secretary .account-status-pending { background-color: #fff3cd; }
+#secretary .account-status-active { background-color: #d4edda; }
+#secretary .account-status-default { background-color: #f0f0f0; }
 /* *************** myaccount ***************** */
 
 /* styles.css */
@@ -519,4 +556,47 @@ footer nav ul a {
         width: 100%; /* Full width on small screens */
         margin: 40px 0; /* Adjust margin for spacing */
     }
+
+    /* Make secretary table scrollable on small screens */
+    #secretary table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* Stack table rows */
+    #secretary thead {
+        display: none;
+    }
+    #secretary tbody {
+        background-color: #b0b1b3;
+    }
+    #secretary tbody, #secretary tr, #secretary td {
+        display: block;
+        width: 100%;
+    }
+
+    #secretary tr {
+        margin-bottom: 30px;
+        background-color: #333; /* Dark background for separation */
+    }
+
+    #secretary td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        background-color: #fff; /* White background for cells */
+    }
+
+    #secretary td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
 }
+
+

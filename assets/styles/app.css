@@ -16,6 +16,23 @@ body {
     transition: opacity 1s ease-out;
 }
 
+/* Custom CSS for flash messages */
+.alert-success {
+    background-color: #d4edda; /* Light green */
+    color: #155724; /* Dark green text */
+}
+
+.alert-danger {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red text */
+}
+
+.alert-info {
+    background-color: #d1ecf1; /* Light blue */
+    color: #0c5460; /* Dark blue text */
+}
+
+
 
 /* *************** base html page ***************** */
 .logof {
@@ -528,6 +545,37 @@ body {
     color: #166bc0;
 }
 
+/* ******************** adjust_finances ******************** */
+#adjust_finances .table-container {
+    flex: 1;
+    min-width: 300px; /* Minimum width before wrapping occurs */
+    margin: 10px;
+}
+
+#adjust_finances table {
+    width: 100%; /* Ensure tables take up the full width of their containers */
+    border-collapse: collapse;
+}
+
+#adjust_finances th, #adjust_finances td {
+    border: 2px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#adjust_finances th {
+    background-color: #f2f2f2; /* Add a background color to the table headers */
+}
+
+#adjust_finances tr:nth-child(even) {
+    background-color: #f9f9f9; /* Add a subtle background color to even rows */
+}
+
+#adjust_finances p {
+    font-style: italic; /* Style the "No users found" message */
+    color: #888;
+}
+
 /* ******************** footer ******************** */
 footer {
     display: flex;
@@ -596,6 +644,15 @@ footer nav ul a {
         padding-left: 15px;
         font-weight: bold;
         text-align: left;
+    }
+
+    #adjust_finances {
+        flex-direction: column; /* Stacks the tables vertically on small screens */
+    }
+
+    #adjust_finances .table-container {
+        width: 100%;
+        margin-bottom: 20px; /* Adds space between stacked tables on small screens */
     }
 }
 

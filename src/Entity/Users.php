@@ -98,6 +98,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(inversedBy: 'usersProfileImage', cascade: ['persist', 'remove'])]
     private ?Images $profileImage = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $deactivationDate = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $reactivationDate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $outstandingAmount = null;
+
+    
     public function __construct()
     {
         $this->payouts = new ArrayCollection();
@@ -239,10 +249,23 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setIsSubscribed(bool $isSubscribed): static
     {
+        // Check if the subscription status has changed from subscribed to not subscribed
+        if (!$isSubscribed && $this->isSubscribed) {
+            $this->deactivationDate = new \DateTime(); // Set the current date and time
+        }
+    
+        // Check if the subscription status has changed from not subscribed to subscribed
+        if ($isSubscribed && !$this->isSubscribed) {
+            $this->reactivationDate = new \DateTime(); // Set the current date and time
+        }
+    
+        // Update the subscription status
         $this->isSubscribed = $isSubscribed;
-
+    
+        // Return the current instance to allow method chaining
         return $this;
     }
+
 
     /**
      * @return Collection<int, Payout>
@@ -461,6 +484,42 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->lastName . ' ' . $this->email;
+    }
+
+    public function getDeactivationDate(): ?\DateTimeInterface
+    {
+        return $this->deactivationDate;
+    }
+
+    public function setDeactivationDate(?\DateTimeInterface $deactivationDate): static
+    {
+        $this->deactivationDate = $deactivationDate;
+
+        return $this;
+    }
+
+    public function getReactivationDate(): ?\DateTimeInterface
+    {
+        return $this->reactivationDate;
+    }
+
+    public function setReactivationDate(?\DateTimeInterface $reactivationDate): static
+    {
+        $this->reactivationDate = $reactivationDate;
+
+        return $this;
+    }
+
+    public function getOutstandingAmount(): ?int
+    {
+        return $this->outstandingAmount;
+    }
+
+    public function setOutstandingAmount(?int $outstandingAmount): static
+    {
+        $this->outstandingAmount = $outstandingAmount;
+
+        return $this;
     }
 
 }

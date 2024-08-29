@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="adjust_finances" class="d-flex flex-wrap justify-content-between">
+        <div class="table-container pt-5">
+            <h2 class="text-center">List of Deleted Users</h2>
+            {% if userStats is not empty %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Names</th>
+                            <th>Months Registered</th>
+                            <th>Total Payouts</th>
+                            <th>Covered Until Date</th>
+                            <th>Today's Date</th>
+                            <th>Overpaid Amount</th>
+                            <th>Refund Amount</th>
+                            <th>Deactivation Date</th>
+                            <th>Refund Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for userStat in userStats %}
+                            <tr>
+                                <td>{{ userStat.firstName }} {{ userStat.lastName }}</td>
+                                <td>{{ userStat.months_registered }}</td>
+                                <td>KES {{ userStat.total_payouts }} </td>
+                                <td>{{ userStat.covered_until_date }}</td>
+                                <td>{{ userStat.todaysDate }}</td>
+                                <td>KES {{ userStat.overpaid_amount }}</td>
+                                <td>KES {{ userStat.refund_amount }}</td>
+                                <td>{{ userStat.deactivation_date }}</td>
+                                <td>{{ userStat.refund_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                            <tr>
+                                <td colspan="7" style="text-align: left;">Total Refund Amount:</td>
+                                <td colspan="2" style="text-align: right;">KES {{ totalRefundAmount }}</td>
+                            </tr>
+                    </tfoot>
+                </table>
+            {% else %}
+                <p>No deleted users found.</p>
+            {% endif %}
+        </div> 
+
+        <div class="table-container pt-5">
+            <h2 class="text-center">List of Reactivated Users</h2>
+            {% if reactivatedUsers is not empty %}
+                {# <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Reactivation <br>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in reactivatedUsers %}
+                            <tr>
+                                <td>{{ user.firstName }} {{ user.lastName }}</td>
+                                <td>{{ user.reactivationDate|date('Y-m-d') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> #}
+            {% else %}
+                <p>No reactivated users found.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

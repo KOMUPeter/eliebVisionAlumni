@@ -32,17 +32,15 @@ class PayoutRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
     
+    public function calculateTotalPayoutsSince(\DateTimeInterface $sinceDate): int
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('SUM(p.amount)')
+            ->where('p.month >= :sinceDate')
+            ->setParameter('sinceDate', $sinceDate);
 
-    //    public function findOneBySomeField($value): ?Payout
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
 }

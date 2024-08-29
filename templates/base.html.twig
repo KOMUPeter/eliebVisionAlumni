@@ -52,6 +52,9 @@
                             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_TREASURER') %}
                             <li><a class="dropdown-item {{ app.request.get('_route') == 'add_payout' ? 'active' : '' }}" href="{{ path('add_payout') }}">Treasurer Page</a></li>
                             {% endif %}
+                            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_TREASURER') %}
+                            <li><a class="dropdown-item {{ app.request.get('_route') == 'add_payout' ? 'active' : '' }}" href="{{ path('adjust_finances') }}">Accounts deleted</a></li>
+                            {% endif %}
                         </ul>
                     </li>
                     {% endif %}

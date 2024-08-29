@@ -57,20 +57,31 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
             ->getSingleScalarResult();
     }
 
-    //    /**
-    //     * @return Users[] Returns an array of Users objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findUsersWithRefunds(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.outstandingAmount > 0')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findDeactivatedUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.deactivationDate IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findReactivatedUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.reactivationDate IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+
 
     //    public function findOneBySomeField($value): ?Users
     //    {

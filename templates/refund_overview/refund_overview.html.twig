@@ -1,0 +1,29 @@
+{# templates/admin/refund_overview.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Refund Overview</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Deactivation Date</th>
+                <th>Original Payout Amount</th>
+                <th>Refunded Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.firstName }} {{ user.lastName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.deactivationDate ? user.deactivationDate|date('Y-m-d') : 'N/A' }}</td>
+                    <td>{{ user.totalPayoutAmount }}</td>
+                    <td>{{ user.outstandingAmount }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

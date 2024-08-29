@@ -50,7 +50,7 @@ security:
 
         # Only treasurers can access treasurer files
         - { path: ^/add-payout, roles: [ROLE_TREASURER, ROLE_ADMIN] }
-        - { path: ^/add-events, roles: [ROLE_TREASURER, ROLE_ADMIN, ROLE_SECRETARY] }
+        - { path: '^/add-events|^/refund_overview/adjust-finances|^/refund_overview/refund-overview|^/refund_overview/reactivate-user/{id}', roles: [ROLE_TREASURER, ROLE_ADMIN, ROLE_SECRETARY] }
 
 when@test:
     security:
@@ -61,6 +61,6 @@ when@test:
             # reduces the work factor to the lowest possible values.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
+                cost: 6 # Lowest possible value for bcrypt
                 time_cost: 4 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon

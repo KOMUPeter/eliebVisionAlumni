@@ -546,14 +546,17 @@ body {
 }
 
 /* ******************** adjust_finances ******************** */
-#adjust_finances .table-container {
-    flex: 1;
-    min-width: 300px; /* Minimum width before wrapping occurs */
-    margin: 10px;
+#adjust_finances {
+    margin: 0 auto; /* Center the container */
+    padding: 10px;
+}
+
+.table-wrapper {
+    overflow-x: auto; /* Enable horizontal scrolling */
 }
 
 #adjust_finances table {
-    width: 100%; /* Ensure tables take up the full width of their containers */
+    width: 100%;
     border-collapse: collapse;
 }
 
@@ -564,15 +567,15 @@ body {
 }
 
 #adjust_finances th {
-    background-color: #f2f2f2; /* Add a background color to the table headers */
+    background-color: #f2f2f2;
 }
 
 #adjust_finances tr:nth-child(even) {
-    background-color: #f9f9f9; /* Add a subtle background color to even rows */
+    background-color: #f9f9f9;
 }
 
 #adjust_finances p {
-    font-style: italic; /* Style the "No users found" message */
+    font-style: italic;
     color: #888;
 }
 
@@ -591,6 +594,12 @@ footer nav ul {
 }
 footer nav ul a {
     color: rgba(245, 245, 245, 0.76);
+}
+/* Media query for small screens */
+@media (max-width: 990px) {
+    #adjust_finances {
+        padding: 0; /* Remove padding if needed */
+    }
 }
 
 
@@ -647,12 +656,12 @@ footer nav ul a {
     }
 
     #adjust_finances {
-        flex-direction: column; /* Stacks the tables vertically on small screens */
+        flex-direction: column; /
     }
 
     #adjust_finances .table-container {
         width: 100%;
-        margin-bottom: 20px; /* Adds space between stacked tables on small screens */
+        margin-bottom: 20px; 
     }
 }
 

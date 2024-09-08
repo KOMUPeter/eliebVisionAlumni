@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Balance and Payout List{% endblock %}
+{% block title %}Balance{% endblock %}
 
 {% block body %}
     <!-- Center-aligned Card Section -->
@@ -10,13 +10,10 @@
                 <!-- Card for Balance Information -->
                 <div class="card p-4 shadow-sm" style="width: 100%; max-width: 600px;">
                     <div class="card-header">
-                        <h2 class="card-title">Balance</h2>
+                        <h2 class="card-title">Group Financial Statement</h2>
                     </div>
                     <div class="card-body">
                         <!-- Links -->
-                        <div class="mb-3">
-                            <a class="btn btn-secondary" href="{{ path('myAccount') }}">My Account</a>
-                        </div>
                         {% if is_granted('ROLE_TREASURER') or is_granted('ROLE_ADMIN') %}
                             <div class="mb-3">
                                 <a class="btn btn-primary" href="{{ path('add_payout') }}">Add a Payment</a>
@@ -34,10 +31,16 @@
                                 Total Events Cost: <strong>{{ balance.totalEventsCost }} KES</strong>
                             </li>
                             <li class="list-group-item">
+                                Total refund amount from Deleted users: <strong>{{ balance.totalRefundAmount }} KES</strong>
+                            </li>
+                            <li class="list-group-item">
                                 Balance: <strong>{{ balance.balance }} KES</strong>
                             </li>
                         </ul>
 
+                    </div>
+                    <div class="mb-3">
+                            <a class="btn btn-secondary" href="{{ path('myAccount') }}">Back to My Account</a>
                     </div>
                 </div>
             </div>

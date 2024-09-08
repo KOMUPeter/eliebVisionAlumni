@@ -92,7 +92,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $registrationAmount = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: "datetime_immutable")]
+    #[Assert\LessThanOrEqual("today", message: "Can not be a future date.")]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToOne(inversedBy: 'usersProfileImage', cascade: ['persist', 'remove'])]

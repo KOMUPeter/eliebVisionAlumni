@@ -49,7 +49,7 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
     }
 
     //calculate the total registration
-    public function getTotalRegistrationAmount(): float
+    public function getTotalRegistrationAmount(): int
     {
         return $this->createQueryBuilder('u')
             ->select('SUM(u.registrationAmount)')
@@ -57,13 +57,13 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
             ->getSingleScalarResult();
     }
 
-    public function findUsersWithRefunds(): array
-    {
-        return $this->createQueryBuilder('u')
-            ->where('u.outstandingAmount > 0')
-            ->getQuery()
-            ->getResult();
-    }
+    // public function findUsersWithRefunds(): array
+    // {
+    //     return $this->createQueryBuilder('u')
+    //         ->where('u.outstandingAmount > 0')
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
     public function findDeactivatedUsers(): array
     {

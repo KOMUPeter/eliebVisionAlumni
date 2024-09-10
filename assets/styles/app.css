@@ -243,15 +243,35 @@ body {
 #secretary .account-status-active { background-color: #d4edda; }
 #secretary .account-status-default { background-color: #f0f0f0; }
 /* *************** myaccount ***************** */
-
-/* styles.css */
-.message-positive {
-    color: green;
+.myaccountContainer {
+    position: relative;
 }
 
-.message-negative {
-    color: red;
+.alert {
+    padding: 20px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    position: absolute; /* Position the alert absolutely within the container */
+    top: 50px; /* Distance from the top of the container */
+    right: 20px; /* Distance from the right side of the container */
+    z-index: 1000; /* Ensure it appears above other content */
+    width: auto; /* Adjust width as needed */
 }
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
 
 .myaccountContainer {
     display: flex;

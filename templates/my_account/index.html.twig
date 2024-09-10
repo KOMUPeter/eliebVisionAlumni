@@ -3,7 +3,19 @@
 {% block title %}My Account{% endblock %}
 
 {% block body %}
+
+
 <div class="container myaccountContainer mt-5 d-flex flex-column align-items-center">
+    <div class="myaccount">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-top-right">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
     <h1 class="text-center">My Account</h1>
     <p><a class="nav-link" href="{{ path('app_home_page') }}">Return to home</a></p>
     <div class="card mt-4">
@@ -53,66 +65,44 @@
             </h4>
             
             <!-- Password change form initially hidden -->
-            <div id="passwordForm">
-                {{ form_start(form) }}
-                    <div class="form-group position-relative">
-                        {{ form_label(form.currentPassword) }}
-                        {{ form_widget(form.currentPassword, {
-                            'attr': {
-                                'class': 'form-control',
-                                'id': 'currentPassword',
-                                'placeholder': 'Current Password'
-                            }
-                        }) }}
-                        <span class="position-absolute" style="right: 10px; top: 38px; cursor: pointer;" onclick="togglePasswordVisibility('currentPassword', 'toggleCurrentPasswordIcon')">
-                            <i id="toggleCurrentPasswordIcon" class="fa fa-eye"></i>
-                        </span>
-                        {{ form_errors(form.currentPassword) }}
-                    </div>      
-                    <div class="form-group position-relative">
-                        {{ form_label(form.newPassword) }}
-                        {{ form_widget(form.newPassword, {
-                            'attr': {
-                                'class': 'form-control',
-                                'id': 'newPassword',
-                                'placeholder': 'New Password'
-                            }
-                        }) }}
-                        <span class="position-absolute" style="right: 10px; top: 38px; cursor: pointer;" onclick="togglePasswordVisibility('newPassword', 'toggleNewPasswordIcon')">
-                            <i id="toggleNewPasswordIcon" class="fa fa-eye"></i>
-                        </span>
-                        {{ form_errors(form.newPassword) }}
-                    </div>      
-                    <button type="submit" class="btn btn-primary">Change Password</button>
-                {{ form_end(form) }}
+            
 
-            </div>
+    <div id="passwordForm">
+        <form method="post" action="{{ path('myAccount') }}">
+        <div class="form-group position-relative">
+            <label for="currentPassword">Current Password</label>
+            <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="Current Password">
+            <span class="position-absolute" style="right: 10px; top: 38px; cursor: pointer;" onclick="togglePasswordVisibility('currentPassword', 'toggleCurrentPasswordIcon')">
+                <i id="toggleCurrentPasswordIcon" class="fa fa-eye"></i>
+            </span>
+            {% if app.flashes('error') %}
+                <div class="text-danger">
+                    {{ app.flashes('error')|first }}
+                </div>
+            {% endif %}
         </div>
+
+        <div class="form-group position-relative">
+            <label for="newPassword">New Password</label>
+            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="New Password">
+            <span class="position-absolute" style="right: 10px; top: 38px; cursor: pointer;" onclick="togglePasswordVisibility('newPassword', 'toggleNewPasswordIcon')">
+                <i id="toggleNewPasswordIcon" class="fa fa-eye"></i>
+            </span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Change Password</button>
+
+        {% if app.flashes('success') %}
+            <div class="text-success mt-3">
+                {{ app.flashes('success')|first }}
+            </div>
+        {% endif %}
+        </form>
+    </div>
+
+
+        </div>  
     </div>
 </div>
 
-<script>
-    function togglePasswordForm(event) {
-        event.preventDefault();
-        var form = document.getElementById('passwordForm');
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function togglePasswordVisibility(passwordId, iconId) {
-        var passwordInput = document.getElementById(passwordId);
-        var icon = document.getElementById(iconId);
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    }
-
-    // Initially hide the password form
-    document.getElementById('passwordForm').style.display = 'none';
-</script>
 {% endblock %}

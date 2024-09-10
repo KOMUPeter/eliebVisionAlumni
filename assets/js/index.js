@@ -1,60 +1,59 @@
-function togglePasswordVisibility(passwordFieldId, toggleIconId) {
-    console.log('togglePasswordVisibility called');
-    var passwordField = document.getElementById(passwordFieldId);
-    var toggleIcon = document.getElementById(toggleIconId);
-    
-    if (passwordField) {
-        var passwordType = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = passwordType;
-        toggleIcon.classList.toggle('fa-eye');
-        toggleIcon.classList.toggle('fa-eye-slash');
-    } else {
-        console.error(`Element with ID ${passwordFieldId} not found.`);
-    }
-}
-
-// hide changing password fields in my account
-document.addEventListener('DOMContentLoaded', function () {
+// Ensure the form is hidden initially
+document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById('passwordForm');
-    var changePasswordLink = document.getElementById('changePasswordLink');
-    var passwordHeading = document.getElementById('passwordHeading');
-
-    // Toggle visibility of the password change form
-    function togglePasswordForm(event) {
-        event.preventDefault(); // Prevent the default link behavior
-        if (form.style.display === 'none' || form.style.display === '') {
-            form.style.display = 'block';
-            passwordHeading.innerHTML = 'Enter the new password';
-        } else {
-            form.style.display = 'none';
-            passwordHeading.innerHTML = '<a href="#" id="changePasswordLink">Click to Change Password?</a>';
-        }
+    if (form) {
+        form.style.display = 'none';
     }
-
-    changePasswordLink.addEventListener('click', togglePasswordForm);
-
-    // Ensure the form is validated before submission
-    form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-            // You can also add custom error handling here
-        }
-        form.classList.add('was-validated'); // Bootstrap example
-    });
 });
 
-// Toggle visibility of the password input field
-function togglePasswordVisibility(inputId, iconId) {
-    var input = document.getElementById(inputId);
-    var icon = document.getElementById(iconId);
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
+
+// Function to toggle the visibility of the password change form
+function togglePasswordForm(event) {
+    event.preventDefault();
+    var form = document.getElementById('passwordForm');
+    if (form) {
+        if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
     } else {
-        input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
+        console.error('Password form not found.');
     }
 }
+
+// Function to toggle the visibility of the password input fields
+function togglePasswordVisibility(fieldId, iconId) {
+    var passwordField = document.getElementById(fieldId);
+    var icon = document.getElementById(iconId);
+
+    if (passwordField && icon) {
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    } else {
+        console.error('Password field or icon not found.');
+    }
+
+    console.log('Field ID:', fieldId); // Check console for logged values
+    console.log('Icon ID:', iconId);   // Check console for logged values
+}
+
+// myaccount password change message show delay time
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.myaccount .alert');
+        alerts.forEach(function(alert) {
+            alert.style.opacity = 0;
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 1000); 
+        });
+    }, 5000); 
+});

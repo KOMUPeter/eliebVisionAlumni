@@ -29,6 +29,7 @@
                     <th>Registration<br>Period</th>
                     <th>Paid<br>Months</th>
                     <th>Unpaid <br>Months</th>
+                    <th>Deleted <br>Users</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +56,14 @@
                                 0 months
                             {% endif %}
                         </td>
+                        <td data-label="Date" class="{% if item.user.deactivationDate is not null %}status-red{% else %}status-green{% endif %}">
+                            {% if item.user.deactivationDate is not null %}
+                                {{"Deleted on"}} <br> {{ item.user.deactivationDate|date('Y-m-d') }}
+                            {% else %}
+                                Not deleted
+                            {% endif %}
+                        </td>
+
                     </tr>
                 {% endfor %}
             </tbody>

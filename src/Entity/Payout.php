@@ -22,6 +22,7 @@ class Payout
     private ?Users $user = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\LessThanOrEqual("today", message: "Can not be a future date.")]
     private ?\DateTimeInterface $month = null;
 
     public function getId(): ?int

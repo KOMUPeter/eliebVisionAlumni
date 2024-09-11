@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add Payout{% endblock %}
+{% block title %}{{ isEdit ? 'Edit Payout' : 'Add Payout' }}{% endblock %}
 
 {% block body %}
 <div class="treasurer">
-    <h2>Add a Payment</h2>
+    <h2>{{ isEdit ? 'Edit Payment' : 'Add Payment' }}</h2>
 
     {# Flash Messages #}
     {% for label, messages in app.flashes %}
@@ -26,8 +26,13 @@
     <div class="form-group">
         {{ form_label(form.month, 'Date', {'label_attr': {'class': 'form-label'}}) }}
         {{ form_widget(form.month, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.month) }}
+        {% if form.month.vars.errors|length > 0 %}
+            <div class="form-error">
+                {{ form_errors(form.month) }}
+            </div>
+        {% endif %}
     </div>
+
 
     <div class="form-group">
         {{ form_label(form.user, 'User', {'label_attr': {'class': 'form-label'}}) }}
@@ -36,7 +41,7 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Add Payout</button>
+        <button type="submit" class="btn btn-primary">{{ isEdit ? 'Edit Payout' : 'Add Payout' }}</button>
     </div>
 
     {{ form_end(form) }}
@@ -44,7 +49,7 @@
     {# Search Form #}
     <h3>Search for Payments</h3>
     <form method="get" action="{{ path('add_payout') }}">
-        <input type="text" name="searchTerm" value="{{ searchTerm }}" placeholder="Enter a names">
+        <input type="text" name="searchTerm" value="{{ searchTerm }}" placeholder="Enter a name">
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 

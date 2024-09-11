@@ -60,7 +60,7 @@
                             {% if item.user.deactivationDate is not null %}
                                 {{"Deleted on"}} <br> {{ item.user.deactivationDate|date('Y-m-d') }}
                             {% else %}
-                                active
+                                Not deleted
                             {% endif %}
                         </td>
 

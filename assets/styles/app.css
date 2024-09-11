@@ -12,6 +12,14 @@ body {
     flex: 1;
 }
 
+/* Add this to your CSS file */
+.form-error {
+    color: red; /* Change text color to red */
+    font-size: 0.875em; /* Optional: adjust the font size */
+    margin-top: 0.25em; /* Optional: add margin above error message */
+}
+
+
 .alert {
     transition: opacity 1s ease-out;
 }

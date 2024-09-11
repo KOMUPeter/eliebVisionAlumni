@@ -99,16 +99,16 @@ class TreasurerController extends AbstractController
     public function addPayout(Request $request): Response
     {
         $payout = new Payout();
-        return $this->handlePayoutForm($request, $payout);
+        return $this->handlePayoutForm($request, $payout, false);
     }
 
     #[Route('/edit-payout/{id}', name: 'edit_payout')]
     public function editPayout(Request $request, Payout $payout): Response
     {
-        return $this->handlePayoutForm($request, $payout);
+        return $this->handlePayoutForm($request, $payout, true);
     }
     
-    private function handlePayoutForm(Request $request, Payout $payout): Response
+    private function handlePayoutForm(Request $request, Payout $payout, bool $isEdit): Response
     {
         $form = $this->createForm(PayoutType::class, $payout);
         $form->handleRequest($request);
@@ -150,8 +150,11 @@ class TreasurerController extends AbstractController
             try {
                 $this->entityManager->persist($payout);
                 $this->entityManager->flush();
-                $this->addFlash('success', $payout->getId() ? 'Payment updated successfully.' : 'Payment added successfully.');
-                return $this->redirectToRoute('add_payout');
+                if ($isEdit) {
+                    $this->addFlash('success', 'Payment updated successfully.');
+                } else {
+                    $this->addFlash('success', 'Payment added successfully.');
+                }                return $this->redirectToRoute('add_payout');
             } catch (\Exception $e) {
                 $this->addFlash('error', 'An error occurred: ' . $e->getMessage());
             }
@@ -164,6 +167,7 @@ class TreasurerController extends AbstractController
             'sortDirection' => $sortDirection,
             'searchTerm' => $searchTerm,
             'showAll' => $showAll,
+            'isEdit' => $isEdit, 
         ]);
     }
 

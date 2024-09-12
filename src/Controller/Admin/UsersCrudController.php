@@ -16,7 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Vich\UploaderBundle\Form\Type\VichImageType;
@@ -67,17 +67,11 @@ class UsersCrudController extends AbstractCrudController
             TextField::new('nextOfKinTel'),
             BooleanField::new('isSubscribed'),
             NumberField::new('registrationAmount'),
-            DateTimeField::new('updatedAt')->setFormat('yyyy-MM-dd HH:mm:ss'),
-            // ImageField::new('profileImage')
-            //     ->setBasePath('/images')
-            //     ->setUploadDir('public/images')
-            //     ->setFormType(VichImageType::class)
-            //     ->setFormTypeOptions([
-            //         'allow_delete' => true,
-            //         'download_uri' => true,
-            //         'image_uri' => true,
-            //     ]),
-
+            DateField::new('updatedAt')->setFormat('yyyy-MM-dd'),
+            ImageField::new('profilePicture')
+                ->setBasePath('/uploads/profile_pictures')
+                ->setUploadDir('public/uploads/profile_pictures')
+                ->setRequired(false), // This field is optional
         ];
 
         $password = TextField::new('password')

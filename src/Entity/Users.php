@@ -11,11 +11,9 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[Vich\Uploadable]
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -65,39 +63,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Payout::class, mappedBy: 'user')]
     private Collection $payouts;
 
-    /**
-     * @var Collection<int, PrivateMessage>
-     */
-    #[ORM\OneToMany(targetEntity: PrivateMessage::class, mappedBy: 'sender')]
-    private Collection $privateMessages;
-
-    /**
-     * @var Collection<int, PrivateMessage>
-     */
-    #[ORM\OneToMany(targetEntity: PrivateMessage::class, mappedBy: 'recipient')]
-    private Collection $recipientPrivateMessage;
-
-    /**
-     * @var Collection<int, GroupMessage>
-     */
-    #[ORM\OneToMany(targetEntity: GroupMessage::class, mappedBy: 'groupSender')]
-    private Collection $groupMessages;
-
-    /**
-     * @var Collection<int, GroupMessage>
-     */
-    #[ORM\ManyToMany(targetEntity: GroupMessage::class, mappedBy: 'groupRecipient')]
-    private Collection $groupRecipient;
-
     #[ORM\Column]
     private ?int $registrationAmount = null;
 
     #[ORM\Column(type: "datetime_immutable")]
     #[Assert\LessThanOrEqual("today", message: "Can not be a future date.")]
     private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\OneToOne(inversedBy: 'usersProfileImage', cascade: ['persist', 'remove'])]
-    private ?Images $profileImage = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $deactivationDate = null;
@@ -108,14 +79,13 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?int $outstandingAmount = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profilePicture = null;
+
     
     public function __construct()
     {
         $this->payouts = new ArrayCollection();
-        $this->privateMessages = new ArrayCollection();
-        $this->recipientPrivateMessage = new ArrayCollection();
-        $this->groupMessages = new ArrayCollection();
-        $this->groupRecipient = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -297,123 +267,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, PrivateMessage>
-     */
-    public function getPrivateMessages(): Collection
-    {
-        return $this->privateMessages;
-    }
-
-    public function addPrivateMessage(PrivateMessage $privateMessage): static
-    {
-        if (!$this->privateMessages->contains($privateMessage)) {
-            $this->privateMessages->add($privateMessage);
-            $privateMessage->setSender($this);
-        }
-
-        return $this;
-    }
-
-    public function removePrivateMessage(PrivateMessage $privateMessage): static
-    {
-        if ($this->privateMessages->removeElement($privateMessage)) {
-            // set the owning side to null (unless already changed)
-            if ($privateMessage->getSender() === $this) {
-                $privateMessage->setSender(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, PrivateMessage>
-     */
-    public function getRecipientPrivateMessage(): Collection
-    {
-        return $this->recipientPrivateMessage;
-    }
-
-    public function addRecipientPrivateMessage(PrivateMessage $recipientPrivateMessage): static
-    {
-        if (!$this->recipientPrivateMessage->contains($recipientPrivateMessage)) {
-            $this->recipientPrivateMessage->add($recipientPrivateMessage);
-            $recipientPrivateMessage->setRecipient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRecipientPrivateMessage(PrivateMessage $recipientPrivateMessage): static
-    {
-        if ($this->recipientPrivateMessage->removeElement($recipientPrivateMessage)) {
-            // set the owning side to null (unless already changed)
-            if ($recipientPrivateMessage->getRecipient() === $this) {
-                $recipientPrivateMessage->setRecipient(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, GroupMessage>
-     */
-    public function getGroupMessages(): Collection
-    {
-        return $this->groupMessages;
-    }
-
-    public function addGroupMessage(GroupMessage $groupMessage): static
-    {
-        if (!$this->groupMessages->contains($groupMessage)) {
-            $this->groupMessages->add($groupMessage);
-            $groupMessage->setGroupSender($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGroupMessage(GroupMessage $groupMessage): static
-    {
-        if ($this->groupMessages->removeElement($groupMessage)) {
-            // set the owning side to null (unless already changed)
-            if ($groupMessage->getGroupSender() === $this) {
-                $groupMessage->setGroupSender(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, GroupMessage>
-     */
-    public function getGroupRecipient(): Collection
-    {
-        return $this->groupRecipient;
-    }
-
-    public function addGroupRecipient(GroupMessage $groupRecipient): static
-    {
-        if (!$this->groupRecipient->contains($groupRecipient)) {
-            $this->groupRecipient->add($groupRecipient);
-            $groupRecipient->addGroupRecipient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGroupRecipient(GroupMessage $groupRecipient): static
-    {
-        if ($this->groupRecipient->removeElement($groupRecipient)) {
-            $groupRecipient->removeGroupRecipient($this);
-        }
-
-        return $this;
-    }
     
     public function getRegistrationAmount(): ?int
     {
@@ -470,18 +323,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getProfileImage(): ?Images
-    {
-        return $this->profileImage;
-    }
-
-    public function setProfileImage(?Images $profileImage): static
-    {
-        $this->profileImage = $profileImage;
-
-        return $this;
-    }
-
     public function __toString(): string
     {
         return $this->lastName . ' ' . $this->email;
@@ -519,6 +360,18 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setOutstandingAmount(?int $outstandingAmount): static
     {
         $this->outstandingAmount = $outstandingAmount;
+
+        return $this;
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture(?string $profilePicture): static
+    {
+        $this->profilePicture = $profilePicture;
 
         return $this;
     }

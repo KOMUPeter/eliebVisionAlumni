@@ -52,14 +52,6 @@
   - description
   - date
 
-- **Message**
-  - id
-  - sender (Many-to-One relationship with User entity)
-  - receiver (Many-to-One relationship with User entity)
-  - content
-  - timestamp
-  - images (One-to-Many relationship with Image entity)
-
 - **Payout**
   - id
   - user (Many-to-One relationship with User entity)
@@ -125,11 +117,11 @@ The application aims to facilitate communication and management within a group. 
 1. **Symfony Framework**
    - Latest stable version.
    - Utilize Symfony Flex for project management.
-2. **React.js with Vite**
-   - Frontend developed using React.js with Vite for fast development.
+2. **Twig for frontend**
+   - Frontend developed using twig for fast development.
    - Responsive design for optimal user experience across devices.
 3. **Database**
-   - MySQL or PostgreSQL for data storage.
+   - MySQL 
 4. **Real-time Messaging**
    - Integration of WebSockets using Symfony's Mercure component or alternative solutions like Pusher or Socket.io.
 5. **File Uploads**
@@ -137,4 +129,3 @@ The application aims to facilitate communication and management within a group. 
    - Store images in a designated directory.
 6. **Deployment**
    - Deployment on a secure server with HTTPS support.
-   - Utilize Docker for containerization if needed.

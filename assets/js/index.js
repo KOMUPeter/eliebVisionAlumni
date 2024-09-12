@@ -40,9 +40,6 @@ function togglePasswordVisibility(fieldId, iconId) {
     } else {
         console.error('Password field or icon not found.');
     }
-
-    console.log('Field ID:', fieldId); // Check console for logged values
-    console.log('Icon ID:', iconId);   // Check console for logged values
 }
 
 // myaccount password change message show delay time

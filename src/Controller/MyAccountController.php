@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Payout;
-use App\Form\ChangePasswordType;
+use App\Form\UsersType;
+use App\Form\ChangePasswordFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,16 +12,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 
 class MyAccountController extends AbstractController
 {
     private UserPasswordHasherInterface $userPasswordHasher;
     private EntityManagerInterface $entityManager;
+    private string $uploadDirectory;    
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager)
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, string $uploadDirectory)
     {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->entityManager = $entityManager;
+        $this->uploadDirectory = $uploadDirectory;        
     }
 
     #[Route('/myAccount', name: 'myAccount')]
@@ -30,6 +36,42 @@ class MyAccountController extends AbstractController
     if (!$user) {
         throw $this->createAccessDeniedException('You must be logged in to access this page.');
     }
+
+    // Create the form
+    $form = $this->createForm(UsersType::class, $user);
+
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $profilePicture = $form->get('profilePicture')->getData();
+
+        if ($profilePicture instanceof UploadedFile) {
+            // Remove old profile picture
+            if ($user->getProfilePicture()) {
+                $oldFile = $this->uploadDirectory.'/'.$user->getProfilePicture();
+                if (file_exists($oldFile)) {
+                    unlink($oldFile);
+                }
+            }
+
+            // Handle new profile picture
+            $originalFilename = pathinfo($profilePicture->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = uniqid().'.'.$profilePicture->guessExtension();
+
+            try {
+                $profilePicture->move($this->uploadDirectory, $newFilename);
+                $user->setProfilePicture($newFilename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Could not upload the file.');
+            }
+        }
+
+        $this->entityManager->flush();
+        $this->addFlash('success', 'Profile updated successfully.');
+        return $this->redirectToRoute('myAccount');
+    }
+
+
 
     // Retrieve all payouts for the logged-in user (your existing logic)
     $payouts = $this->entityManager->getRepository(Payout::class)->findBy(['user' => $user], ['month' => 'ASC']);
@@ -129,6 +171,7 @@ class MyAccountController extends AbstractController
     }
 
     return $this->render('my_account/index.html.twig', [
+        'form' => $form->createView(),
         'user' => $user,
         'totalPaid' => $totalPaid,
         'totalDue' => $totalDue,

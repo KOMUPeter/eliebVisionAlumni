@@ -371,9 +371,30 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setProfilePicture(?string $profilePicture): static
     {
+        // If there's already a profile picture set
+        if ($this->profilePicture !== null) {
+            $this->deleteOldProfilePicture();
+        }
+
+        // Set the new profile picture
         $this->profilePicture = $profilePicture;
 
         return $this;
     }
+
+    private function deleteOldProfilePicture(): void
+    {
+        // Adjust this path to match where my profile pictures are stored
+        $publicDir = __DIR__ . '/../../public/uploads/profile_pictures/';
+
+        // Build the full path of the old profile picture
+        $oldProfilePicturePath = $publicDir . $this->profilePicture;
+
+        // Check if the file exists and delete it
+        if (file_exists($oldProfilePicturePath)) {
+            unlink($oldProfilePicturePath);
+        }
+    }
+
 
 }

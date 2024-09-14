@@ -21,17 +21,24 @@
             <h3 class="card-title text-center">My Account Details</h3>
             <div class="profile-picture">
                 <div>
-                {% if user.profilePicture %}
-                    <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Profile Picture" class="img-thumbnail" width="150">
-                {% else %}
-                    <p>No profile picture uploaded</p>
-                {% endif %}
+                    {% if user.profilePicture %}
+                        <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Profile Picture" class="img-thumbnail" width="150">
+                    {% else %}
+                        <p>No profile picture uploaded</p>
+                    {% endif %}
                 </div>
-                <div>
-                {{ form_start(form) }}
-                {{ form_row(form.profilePicture) }}
-                <button type="submit" class="btn btn-primary">Update Profile Picture</button>
-                {{ form_end(form) }}
+                
+                <!-- Button to show the form -->
+                <div id="updateProfilePictureButton">
+                    <button type="button" class="btn btn-primary" onclick="showProfilePictureForm()">Change your <br>Profile Picture</button>
+                </div>
+                
+                <!-- Form initially hidden -->
+                <div id="profilePictureForm" style="display: none;">
+                    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                    {{ form_row(form.profilePicture) }}
+                    <button type="submit" class="btn btn-primary">Change / Update</button>
+                    {{ form_end(form) }}
                 </div>
             </div>
 

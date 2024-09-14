@@ -54,3 +54,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }, 5000); 
 });
+
+// change profile picture
+function showProfilePictureForm() {
+    document.getElementById('updateProfilePictureButton').style.display = 'none';
+    document.getElementById('profilePictureForm').style.display = 'block';
+}

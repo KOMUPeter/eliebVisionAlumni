@@ -60,6 +60,7 @@ class UsersType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a valid JPEG or PNG image',
                     ])
                 ],
+                'mapped' => false,
             ])
         ;
     }

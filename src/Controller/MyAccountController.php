@@ -36,7 +36,7 @@ class MyAccountController extends AbstractController
     if (!$user) {
         throw $this->createAccessDeniedException('You must be logged in to access this page.');
     }
-
+    
     // Create the form
     $form = $this->createForm(UsersType::class, $user);
 
